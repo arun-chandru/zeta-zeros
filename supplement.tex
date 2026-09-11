@@ -1,0 +1,1431 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks[2]
+\numberwithin{equation}{section}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\sinc}{\operatorname{sinc}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\lo}{\mathrm{lo}}
+\newcommand{\hi}{\mathrm{hi}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\pe}{p_{\mathrm e}}
+\newcommand{\pint}{p_{\mathrm i}}
+\newcommand{\tS}{\tau_{\mathrm S}}
+\newcommand{\tL}{\tau_{\mathrm L}}
+\newcommand{\qlo}{\underline q}
+\newcommand{\qddlo}{\underline {q''}}
+\newcommand{\floor}[1]{\left\lfloor #1\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil #1\right\rceil}
+\title[Local certificates and the thirteen-point boundary]{--- Supplementary Information ---\\ Local certificates for compensated Gram bounds:\\
+the two seven-point inputs and the completed one-short thirteen-point regions}
+\author{R. Arun Chandru}
+\date{10 September 2026}
+\begin{document}
+\begin{abstract}
+This supplement gives the mathematical specification
+and acceptance proofs for two computer-assisted inequalities on six
+nonnegative gaps. They are the cosine row with floor $19/5000$ and
+pressure $1/3000$, and the two-mode row with floor $7/400$ and pressure
+$1/500$. We explain interval arithmetic, removable singularities,
+whole-cell range minima, matrix lower bounds, and complete-domain
+accounting, with source-bound records of completed executions.
+A separate six-mode, thirteen-point problem is developed from its scalar
+exclusions and two analytic baselines. An adjacent-long-gap certificate
+and four completed triple bounds then exclude its all-long region and
+every one-short region, including both interior placements. The remaining
+multi-short region is not certified. No full thirteen-point inequality
+or additional global zero-count bound is asserted.
+\end{abstract}
+\maketitle
+\tableofcontents
+
+\section{Scope, dependencies, and the meaning of a certificate}
+
+There are three different Fourier kernels in this supplement. The first
+two supply the only local numerical inputs to the main manuscript. The
+third concerns a separate, unfinished thirteen-point problem. A floor,
+pressure allowance, or quadratic reserve proved for one kernel is not
+available for either of the others.
+
+All the mathematics needed to understand the local certificates is given
+below. The accompanying verification package is
+a computational implementation of these arguments, not a substitute for
+them. Its manifest identifies the distributed sources and the provenance
+of recorded results. A digest establishes byte identity; by itself it
+does not establish an interval enclosure or a covering argument.
+
+The trust boundary has three parts. First are the displayed analytic and
+finite-dimensional arguments. Second are a correctly implemented outward
+arithmetic backend and the source implementing the stated acceptance and
+coverage rules. Third is an actual completed execution of that source
+with the exact configuration in question. The recorded executions used
+Arb through \texttt{python-flint} version 0.9.0 at 128-bit precision for
+scalar cell tables; the later triple certificates use exact rational
+arithmetic after these tables have been established. None of these
+computations is presented as a formal proof-assistant verification.
+
+The scalar-cell, range-minimum, and convex-tangent verification framework,
+including the cosine seven-point row, comes from Ainta's MIT-licensed
+implementation \cite{ainta}. The two-mode callbacks and the additional
+acceptance rules are adaptations. The Fourier-profile and local-pressure
+viewpoint is not claimed here as an invention of this supplement. The
+main manuscript discusses its mathematical prior art and the distinct
+common-witness transfer. Here the purpose is to expose the precise local
+proof obligations and their evidence, including the limits of that
+evidence.
+
+\section{The kernels and the local energy}
+
+Put $z=1/\sqrt2$ and define the normalized cosine density by
+\begin{equation}\label{eq:density0}
+ f_0(t)=\frac{\cos(\sqrt2t)}{\sqrt2\sin z}
+ \quad (|t|\leq\tfrac12),\qquad f_0(t)=0\quad(|t|>\tfrac12).
+\end{equation}
+For a finite real vector $u=(u_1,\ldots,u_d)$, set
+\begin{equation}\label{eq:densityu}
+ f_u(t)=f_0(t)+\sum_{j=1}^d u_j\cos(2\pi jt)
+ \quad (|t|\leq\tfrac12),
+\end{equation}
+and set it to zero elsewhere. Direct integration gives $\int f_0=1$;
+each perturbing cosine has integral zero. Thus $\int f_u=1$.
+The three choices used here are
+\begin{equation}\label{eq:profiles}
+ u_{\mathrm C}=(),\qquad
+ u_{\mathrm H}=\left(\frac{13}{500},-\frac7{500}\right),\qquad
+ u_{13}=\frac1{4000}(37,-69,-1,8,-11,2).
+\end{equation}
+The elementary inequalities $\cos z\geq3/4$ and
+$0<\sqrt2\sin z\leq1$ imply $f_0\geq3/4$ on its support.
+The absolute coefficient sums in the last two profiles are respectively
+$1/25$ and $4/125$. Consequently all three densities are nonnegative;
+in particular $f_{u_{13}}\geq359/500>0$. Each is real and even.
+
+Our Fourier convention and squared kernel are
+\begin{equation}\label{eq:kernel}
+ k_u(x)=\int_{-1/2}^{1/2}f_u(t)e^{-2\pi ixt}\,dt,
+ \qquad q_u(x)=k_u(x)^2\quad(x\in\R).
+\end{equation}
+The kernel is real on the real axis, and $q_u\geq0$. Writing
+$\sinc y=\sin y/y$ with $\sinc0=1$, direct integration yields the entire
+formulas
+\begin{align}
+ k_0(x)&=\frac{\sinc(\pi x-z)+\sinc(\pi x+z)}{2\sqrt2\sin z},
+       \label{eq:sinc0}\\
+ k_u(x)&=k_0(x)+\frac12\sum_{j=1}^d u_j
+      \{\sinc(\pi(x-j))+\sinc(\pi(x+j))\}.\label{eq:sincu}
+\end{align}
+These formulas have no actual poles, even when a shifted argument
+vanishes. Since the support is compact, differentiation under the
+integral is valid to every order. Positivity and normalization give
+\begin{equation}\label{eq:globalderivative}
+ |k_u|\leq1,\qquad |k_u'|\leq\pi,\qquad |k_u''|\leq\pi^2,
+ \qquad |q_u''|\leq4\pi^2.
+\end{equation}
+The last inequality follows from
+$q_u''=2(k_u')^2+2k_uk_u''$.
+
+For $m-1$ nonnegative gaps $g=(g_1,\ldots,g_{m-1})$, define
+\begin{equation}\label{eq:Vm}
+ V_{m,u}(g)=\sum_{h=1}^{m-1}\frac2{m-h}
+       \sum_{i=1}^{m-h}q_u(g_i+\cdots+g_{i+h-1}).
+\end{equation}
+Zero gaps are included. The coefficients in this formula are part of
+the objective and must not be replaced by uniform coefficients over
+all pairs. The two seven-point assertions are
+\begin{align}
+ V_{7,\mathrm C}(g)+\frac1{3000}\sum_{j=1}^6g_j
+       &\geq\frac{19}{5000},\label{eq:rowC}\\
+ V_{7,\mathrm H}(g)+\frac1{500}\sum_{j=1}^6g_j
+       &\geq\frac7{400},\label{eq:rowH}
+\end{align}
+for every $g\in[0,\infty)^6$. These are whole-orthant statements, not
+inequalities only at a mesh or at distinct configurations.
+
+\section{Arithmetic that encloses functions, not samples}
+
+\subsection{Outward operations and removable singularities}
+
+An interval $[a,b]$ denotes a set containing the exact quantity in
+question. Sums, differences, products, and quotients are rounded
+outwards; division is allowed only after zero has been excluded from
+the denominator interval. For rational intervals the endpoints and all
+comparisons can be exact. For Arb balls the containment guarantee of the
+backend is used, followed, where required, by a downward conversion to
+the exact real number represented by a binary64 value. Converting a
+lower endpoint to nearest binary64 and then applying
+\texttt{nextafter} toward $-\infty$ gives a conservative lower endpoint
+when the result is finite. A nonnegative lower bound is clipped at zero
+only when nonnegativity has independently been proved.
+
+Away from zero, the identities
+\begin{align*}
+ \sinc'(y)&=\frac{y\cos y-\sin y}{y^2},\\
+ \sinc''(y)&=\frac{(2-y^2)\sin y-2y\cos y}{y^3}
+\end{align*}
+may be evaluated by interval arithmetic. If an argument ball includes
+zero, these divisions are not permitted. The following explicit
+polynomials handle such balls. For $|y|\leq b<1$, let
+\begin{align*}
+ P_0(y)&=\sum_{n=0}^{8}\frac{(-1)^ny^{2n}}{(2n+1)!},\\
+ P_1(y)&=-\sum_{n=0}^{8}\frac{(-1)^ny^{2n+1}}{(2n+1)!(2n+3)},\\
+ P_2(y)&=-\sum_{n=0}^{8}\frac{(-1)^ny^{2n}}{(2n)!(2n+3)}.
+\end{align*}
+Then the respective error bounds are
+\begin{equation}\label{eq:sincremainders}
+ |\sinc-P_0|\leq\frac{b^{18}}{19!},\qquad
+ |\sinc'-P_1|\leq\frac{b^{19}}{19!\,21},\qquad
+ |\sinc''-P_2|\leq\frac{b^{18}}{18!\,21}.
+\end{equation}
+For completeness, $\sinc y=\int_0^1\cos(ty)\,dt$.
+Differentiate this identity once or twice and apply the real Taylor
+remainder for sine or cosine inside the integral. Integrating the
+extra powers of $t$ gives exactly the three denominators in
+\eqref{eq:sincremainders}. Thus these are bounds over the whole ball,
+not an alternating-series test at its center. Substitution in
+\eqref{eq:sinc0}--\eqref{eq:sincu}, with factors $\pi$ and $\pi^2$
+for differentiation in $x$, encloses $k,k',k''$ and hence $q,q',q''$
+for each of the three specified profiles.
+
+\subsection{A completely rational point evaluator}
+
+The scalar gates and the atomic Taylor certificates below can be
+checked without floating transcendental arithmetic at their rational
+evaluation points. Here is an explicit construction. The Machin
+identity
+\begin{equation}\label{eq:machin}
+ \pi=16\arctan(1/5)-4\arctan(1/239)
+\end{equation}
+and the sums $\sum_{n=0}^{40}(-1)^n/((2n+1)a^{2n+1})$ give rational
+enclosures for the two arctangents. Each error is at most
+$1/(83a^{83})$, with its alternating sign. Combine their endpoint
+intervals outwards. If desired, after each operation round to the
+outward rational lattice of spacing $10^{-50}$.
+
+Put
+\begin{equation}\label{eq:R0}
+ R_0=\frac12+z\cot z.
+\end{equation}
+The Taylor sums through index $30$ for $\cos z$ and $\sin z/z$, with
+the next alternating term, enclose them using only powers of
+$z^2=1/2$. Divide these positive rational intervals to enclose
+$z\cot z$. No numerical square root is needed for this operation.
+
+For rational $x$, write $x=n+v$, where $n=\floor{x+1/2}$ and
+$-1/2\leq v<1/2$. Evaluate $\sin(\pi v)$ through degree $47$ and
+$\cos(\pi v)$ through degree $46$, including symmetric remainders
+$2^{49}/49!$ and $2^{48}/48!$. These follow from $|\pi v|<2$ and
+the ordinary real Taylor theorem. Interval evaluation of these
+polynomials, and the factor $(-1)^n$, encloses $\sin(\pi x)$ and
+$\cos(\pi x)$.
+
+The directly integrated point formulas are
+\begin{align}
+ k_0(x)&=\frac{\cos(\pi x)-2(R_0-1/2)\pi x\sin(\pi x)}
+                    {1-2\pi^2x^2},\label{eq:rationalkernel}\\
+ k_u(x)-k_0(x)&=\sum_{j=1}^d
+       u_j\frac{(-1)^jx\sin(\pi x)}{\pi(x^2-j^2)}.
+       \label{eq:rationalmodes}
+\end{align}
+At $x=j$ the corresponding mode integral is exactly $1/2$ and is
+handled separately. Other denominators must be checked to exclude zero.
+All rational point evaluations below have $x\geq5/6$. The atomic
+helper includes the separately guarded range $[9/10,1)$.
+On that below-one range $1-2\pi^2x^2<0$ and each $x^2-j^2<0$; the interval
+implementation still verifies these signs before division. At the
+positive integers the removable resonances are handled explicitly.
+This is a point evaluator with proved error bounds. A whole interval is
+enclosed either by the entire sinc formulas or by an additional
+derivative bound; point evaluation alone is never a domain certificate.
+
+\section{The complete seven-point verification}
+
+\subsection{Pressure compactification and scalar cell tables}
+
+Write $F_7=V_7+p\sum g_j$, with one of the exact pairs
+$(\eps,p)$ in \eqref{eq:rowC}--\eqref{eq:rowH}. Since $V_7\geq0$,
+the region $\sum g_j\geq\eps/p$ is settled by pressure alone.
+Every strict counterexample would therefore have all its coordinates
+less than $\eps/p$. The common grid is $G=4000$, with closed cells
+\begin{equation}\label{eq:cells}
+ J_i=[i/G,(i+1)/G]\qquad(i=0,1,\ldots).
+\end{equation}
+Let $L=\ceil{\eps G/p}$. The coordinate cells $0,\ldots,L-1$
+cover every possible strict counterexample; shared boundaries are
+included. The recorded tables have $L+8$ entries. They supply lower
+bounds
+\begin{equation}\label{eq:tables}
+ q(x)\geq Q_i\geq0,\qquad q''(x)\geq D_i\quad(x\in J_i)
+\end{equation}
+where the second assertion is made only for finite, available entries.
+To obtain $Q_i$, enclose $k(J_i)$ by Arb, take a nonnegative lower
+bound for its absolute value, convert downwards, and square downwards.
+To obtain $D_i$, enclose $q''(J_i)$ and convert its lower endpoint
+downwards. An unavailable curvature prefix is represented by
+$-\infty$, not zero.
+
+It is unnecessary for these tables to contain every possible summed
+distance in the six-dimensional box. If a sum reaches beyond the
+stored $q$ table, the universally valid lower bound zero is used for
+that energy term. If it reaches beyond the stored curvature table,
+the corresponding derivative test is unavailable. No extrapolation or
+unproved zero-curvature assertion is made.
+
+Before forming multidimensional roots, remove any coordinate cell for
+which
+\begin{equation}\label{eq:singleprune}
+ \frac13 Q_i+p\frac iG\geq\eps.
+\end{equation}
+This is valid because that coordinate's nearest-gap term in $V_7$
+has coefficient $1/3$, and every discarded term of $F_7$ is
+nonnegative. Maximal consecutive surviving groups form scalar
+components. Their Cartesian products cover all remaining candidates.
+
+\subsection{Range indices and elementary lower bounds}
+
+Represent a box by six inclusive integer ranges $[a_j,b_j]$.
+Its physical coordinate interval is
+$[a_j/G,(b_j+1)/G]$. A sum of $h$ consecutive coordinates is
+contained in the scalar cells from
+\begin{equation}\label{eq:sumindices}
+ a_i+\cdots+a_{i+h-1}
+ \quad\hbox{through}\quad
+ b_i+\cdots+b_{i+h-1}+h-1,
+\end{equation}
+inclusive. The final $h-1$ is essential. Omitting it would leave
+part of the closed sum interval unchecked.
+
+Taking the minimum of every $Q$ entry in this range gives a whole-box
+lower bound for its energy term. A sparse range-minimum structure can
+answer the same query using two overlapping power-of-two ranges whose
+union is the entire requested range. Overlap is harmless for a
+minimum; a gap would not be. Adding all the resulting lower bounds
+with the original positive coefficients and the pressure at lower
+coordinate endpoints gives a valid interval lower bound for $F_7$.
+The target is rounded upwards and lower contributions downwards
+before any binary64 acceptance comparison.
+
+\subsection{Signed Hessian bounds and center tests}
+
+For each pair distance write $x_e=v_e^Tg$, where $v_e$ is the zero-one
+incidence vector of its consecutive gaps, and let $c_e=2/(7-h_e)$,
+where $h_e=v_e^Tv_e$. The exact Hessian is
+\begin{equation}\label{eq:hessian7}
+ \nabla^2 F_7(g)=\sum_e c_e q''(v_e^Tg)v_ev_e^T.
+\end{equation}
+If $\ell_e\leq c_eq''(v_e^Tg)$ throughout a box, then the exact
+represented matrix
+\begin{equation}\label{eq:matrixlower}
+ H_-:=\sum_e\ell_ev_ev_e^T\preceq\nabla^2F_7(g)
+\end{equation}
+throughout it. Indeed, the difference is a sum of positive
+semidefinite rank-one matrices with nonnegative coefficients. Negative
+$\ell_e$ are allowed. When $c_e$ is bracketed by binary64 endpoints,
+its lower endpoint must be used for a nonnegative curvature lower
+bound and its upper endpoint for a negative one; the product is then
+rounded downwards. This sign rule prevents an upward error in a
+negative Hessian contribution.
+
+Let $c$ be the rational center of the physical box, and let $r_j$
+be its rational coordinate radii. If rigorous LDL decomposition
+establishes $H_-$ positive definite, $F_7$ is convex on the box.
+In particular,
+\begin{equation}\label{eq:tangent}
+ F_7(g)\geq F_7(c)-\sum_{j=1}^6|\partial_j F_7(c)|r_j.
+\end{equation}
+The center value is bounded below and each derivative magnitude above
+by Arb. A floating LDL test may be used to decide whether to attempt
+the rigorous test, but it cannot accept a box. The rigorous LDL test
+uses the exact represented rational matrix and requires every pivot
+strictly positive, with all interval divisions justified.
+
+The two-mode computation also uses the stronger lower quadratic.
+Taylor's integral remainder along the segment from $c$ to $g$ gives
+\begin{equation}\label{eq:quadratic7}
+ F_7(g)\geq F_7(c)+\nabla F_7(c)^T(g-c)
+                   +\tfrac12(g-c)^TH_-(g-c).
+\end{equation}
+If $H_-=LDL^T$ is positive definite, minimizing the right-hand side
+over all of $\R^6$ gives
+\begin{equation}\label{eq:debit7}
+ F_7(g)\geq F_7(c)-\tfrac12\nabla F_7(c)^TH_-^{-1}\nabla F_7(c).
+\end{equation}
+Solving $Ly=\nabla F_7(c)$ by interval forward substitution encloses
+the quadratic term as $\sum_j y_j^2/D_j$. It is subtracted with an
+upper bound. The minimizing point need not belong to the box.
+
+A further valid fallback discards positive curvature contributions.
+For $\ell_e<0$, Cauchy--Schwarz gives
+$\ell_ev_ev_e^T\succeq\ell_e h_e I$.
+Thus $\mu I\preceq H_-$ with
+$\mu=\sum_{\ell_e<0}h_e\ell_e\leq0$. The lower Taylor bound becomes
+\begin{equation}\label{eq:signedfallback}
+ F_7(g)\geq F_7(c)-\sum_j|\partial_jF_7(c)|r_j
+                       +\frac\mu2\sum_jr_j^2.
+\end{equation}
+All quantities are enclosed outwards. Each of
+\eqref{eq:tangent}, \eqref{eq:debit7}, and
+\eqref{eq:signedfallback} is an alternative lower bound. Their
+maximum is permissible; adding them would count the same cost more
+than once.
+
+Center values may be cached because every center distance is exactly
+of the form $k/(2G)$ for an integer $k$. A cache key must encode this
+exact index, and the profile and precision must be immutable during
+the run. Caching complete enclosing balls does not change any
+acceptance rule.
+
+\subsection{Exhaustion of the domain}
+
+If a box passes none of the valid lower bounds, bisect its widest
+integer coordinate range. For $a<b$, the two children $[a,m]$ and
+$[m+1,b]$, $m=\floor{(a+b)/2}$, partition its atomic cell indices
+and cover its closed physical interval. Continue until all roots have
+been discharged. A remaining atomic box that passes no test is
+unresolved, not accepted and not automatically a counterexample.
+Similarly, a node cap, exception, or interrupted execution is not a
+successful proof.
+
+Uniform pressure and \eqref{eq:Vm} are invariant under full reversal
+of the six gaps. A reversal reduction, if used, must keep one
+representative for each genuinely reversed pair. There is no
+arbitrary permutation symmetry. Source review and complete tree
+traversal establish coverage; identities such as
+\begin{equation}\label{eq:treecounts}
+ \text{roots}+\text{splits}=\text{accepted leaves},\qquad
+ \text{visited nodes}=\text{splits}+\text{accepted leaves}
+\end{equation}
+are useful independent consistency checks on a completed binary forest,
+but are not a replacement for that coverage argument.
+
+\section{Completed verification of the two seven-point rows}
+
+The distributed verification package recomputed both seven-point
+inequalities with the exact configurations above. The following table
+records these completed executions. Both use grid 4000, 128-bit Arb
+arithmetic, and curvature start index 1001. Each successful execution
+exhausted its covering forest with no unresolved atomic cell.
+
+\begin{center}\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Quantity & Cosine row & Two-mode row\\
+\midrule
+Exact floor & $19/5000$ & $7/400$\\
+Pressure per gap & $1/3000$ & $1/500$\\
+Grid / Arb precision & $4000/128$ & $4000/128$\\
+Coordinate cutoff $L$ & $45600$ & $35000$\\
+Scalar table entries & $45608$ & $35008$\\
+Curvature start index & $1001$ & $1001$\\
+Initial roots & $378$ & $1$\\
+Visited nodes & $268856$ & $129093$\\
+Splits & $134239$ & $64546$\\
+Accepted leaves & $134617$ & $64547$\\
+Pressure leaves & $1597$ & $602$\\
+Interval leaves & $111698$ & $38533$\\
+Derivative-test leaves & $21322$ & $25412$\\
+Maximum depth & $32$ & $59$\\
+Unresolved / pending & $0/0$ & $0/0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The cosine coordinate components, in inclusive cell indices, are
+\begin{equation}\label{eq:Ccomponents}
+ [3809,4778],\qquad[7221,9363],\qquad[10572,44827].
+\end{equation}
+There are $3^6=729$ Cartesian roots, of which
+$(729+27)/2=378$ represent the reversal orbits. The
+two-mode computation has the single component $[3443,34516]$ and
+therefore one six-dimensional root. Its category named ``tangent''
+in the saved report includes the valid derivative alternatives above;
+that label is not a claim that each such leaf used only the affine
+tangent formula. Its center-cache report has $1666485$ hits and $2574$
+misses.
+
+The scalar-table SHA-256 values, with binary64 table encoding fixed
+by the accompanying source and manifest, are as follows. Line breaking
+of a printed digest has no mathematical significance.
+\begin{quote}\footnotesize
+Cosine $q$:
+\path{a9992300d2bf71665aa2b6bd2727e798624cd297103bb200c7f0ca2baea55a2c}
+
+Cosine $q''$:
+\path{766b97d9ba81dffd915acaf1c1ba9938166c3191011e744424c12fd3a141bd52}
+
+Two-mode $q$:
+\path{f0be0477f6c4c98c7c3d879abf79f509fa637e9d4740fe8ee83bd4af52899580}
+
+Two-mode $q''$:
+\path{aa35a51991d4a84c748e1908f7d95482ac507051d7c67b16c6919ee09f35377c}
+\end{quote}
+
+The cosine row has a completed ordinary execution of the distributed
+source. The two-mode row has completed ordinary and \texttt{-OO}
+executions: their entire receipts agree after removing only the
+optimization flag and the engine's elapsed time. Source identities,
+table digests and machine-readable covering summaries accompany the
+package. These completed computations support \eqref{eq:rowC} and
+\eqref{eq:rowH} subject to the stated implementation and arithmetic
+trust boundary. An optimization-mode comparison is a consistency
+check, not an independent enclosure method.
+
+\section{A separate thirteen-point objective}
+
+For the remainder of the supplement, $k=k_{u_{13}}$ and $q=k^2$
+refer only to the six-mode profile in \eqref{eq:profiles}. Define
+\begin{equation}\label{eq:F13}
+ F(g)=V_{13,u_{13}}(g)+\sum_{j=1}^{12}p_jg_j,
+ \qquad g\in[0,\infty)^{12},
+\end{equation}
+where
+\begin{equation}\label{eq:pressures13}
+ p_1=p_{12}=\pe=\frac{811}{4800000},\qquad
+ p_2=\cdots=p_{11}=\pint=\frac{6359}{24000000}.
+\end{equation}
+In particular,
+\begin{equation}\label{eq:target13}
+ P:=\sum_jp_j=\frac{239}{80000},\qquad
+ \eps:=\frac{31}{5000}.
+\end{equation}
+We do \emph{not} assert $F\geq\eps$ on this entire orthant. The
+first task is to restrict where a strict counterexample could lie.
+All scalar restrictions in the next two sections are necessary
+conditions under the explicit hypothesis $F(g)<\eps$.
+
+Write $a=1/(\sqrt2\sin z)$. Since
+$11/12\leq\sin z/z\leq1$, we have $1\leq a\leq12/11$.
+The convenient full-density bounds
+\begin{equation}\label{eq:densitybounds13}
+ m:=\frac{71}{100}\leq f_{u_{13}}(t)\leq
+ M:=\frac{311}{275}\quad(|t|\leq\tfrac12)
+\end{equation}
+follow from $\cos z\geq3/4$ and
+$\sum|u_j|=4/125\leq1/25$. The bounds apply to the perturbed
+density, not just its cosine part.
+
+\subsection{Monotonicity and the minimum-gap bootstrap}
+
+Differentiating the even Fourier integral gives
+\begin{equation}\label{eq:kmonotone}
+ -k'(x)=4\pi\int_0^{1/2}t f_{u_{13}}(t)\sin(2\pi xt)\,dt.
+\end{equation}
+For $0<x\leq1$ this is strictly positive. For
+$1\leq x\leq27/25$, the sine is at least $1/2$ on
+$[1/8,3/8]$: its argument belongs to
+$[\pi/4,81\pi/100]\subset[\pi/6,5\pi/6]$.
+This part of the integral in \eqref{eq:kmonotone}, before its
+factor $4\pi$, is at least $71/3200$. A negative contribution can
+occur only for $t\geq1/(2x)\geq25/54$; its absolute value is at
+most $M(1/2)(1/2-25/54)=311/14850$. Their difference is
+$1183/950400>0$. All other contributions are nonnegative. Hence
+$k$ is strictly decreasing on $(0,27/25]$.
+
+The exact point evaluator in Section 3 verifies
+$k(5/6)>0$ and $k(5/6)^2/6>\eps$.
+If some gap were at most $5/6$, monotonicity would make its nearest
+term alone exceed the target. Thus all gaps of a strict
+counterexample exceed $5/6$. More generally, suppose all such gaps
+already exceed $d_0$, and $d_0<d_1\leq1$ with $k(d_1)>0$.
+A gap at most $d_1$ would imply
+\begin{equation}\label{eq:bootstrap1}
+ F(g)\geq\frac{k(d_1)^2}{6}+d_0P.
+\end{equation}
+The following outward lower endpoints exceed $\eps$ and prove the
+successive improved cuts. The pressure $d_0P$ includes all twelve
+gaps exactly once; only one nonnegative nearest energy term is kept.
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+$d_0$ & $d_1$ & Lower endpoint in \eqref{eq:bootstrap1}\\
+\midrule
+$5/6$ & $9/10$ & $0.007009907197317624826482$\\
+$9/10$ & $91/100$ & $0.006608495667780589234137$\\
+$91/100$ & $183/200$ & $0.006356600267380480502615$\\
+$183/200$ & $917/1000$ & $0.006262235820193320264541$\\
+$917/1000$ & $459/500$ & $0.006214284540455943193710$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Set $\tau_0=209/200$. Exact evaluation encloses
+\begin{equation}\label{eq:tau0value}
+ k(\tau_0)\in
+ [0.015366680647566453432485,\ 0.015366680647566453432486]
+\end{equation}
+and gives
+\begin{equation}\label{eq:tau0reserve}
+ \frac{k(\tau_0)^2}{6}-\pint(\tau_0-459/500)
+       >0.000005706104020715559434.
+\end{equation}
+For $459/500\leq g\leq\tau_0$, monotonicity, positivity, and
+\eqref{eq:tau0reserve} imply
+$q(g)/6+pg\geq p\tau_0$ for either pressure $p$.
+For $g\geq\tau_0$ pressure alone proves the same assertion.
+Thus this first scalar baseline holds on the entire half-line
+$[459/500,\infty)$.
+
+If all gaps exceed $d_0$ but one is at most $d_1\leq\tau_0$,
+use the eleven other scalar baselines to obtain
+\begin{equation}\label{eq:bootstrap2}
+ F(g)\geq\frac{k(d_1)^2}{6}+\tau_0P-\pint(\tau_0-d_0).
+\end{equation}
+The steps $(d_0,d_1)=(.918,.920),(.920,.922),(.922,.924)$
+have respective outward lower endpoints
+\begin{align*}
+ &0.006456625078131788200580,\\
+ &0.006352660139980702315412,\\
+ &0.006250599414089590385868.
+\end{align*}
+They exceed $\eps$. Consequently every strict counterexample has
+\begin{equation}\label{eq:delta}
+ g_j>\delta:=\frac{231}{250}\quad(1\leq j\leq12).
+\end{equation}
+Each decimal just displayed is a terminating rational lower bound,
+not a claim about an unbounded numerical error.
+
+\subsection{Compact necessary domains}
+
+Put
+\begin{equation}\label{eq:gateB}
+ B=\eps-\tau_0P=\frac{49249}{16000000},\qquad
+ W_p(x)=\frac{q(x)}6+p(x-\tau_0).
+\end{equation}
+The nearest cost $w_p(x)=q(x)/6+px$ is at least both $p\tau_0$
+and $px$. Since all higher-distance terms are nonnegative, a strict
+counterexample satisfies
+\begin{equation}\label{eq:positiveparts0}
+ \sum_jp_j(g_j-\tau_0)_+<B,
+ \qquad W_{p_j}(g_j)<B.
+\end{equation}
+The second inequality follows by using the other eleven baselines.
+In particular its coordinates and span satisfy
+\begin{align}
+ g_1,g_{12}&<\tau_0+B/\pe=\frac{3124439}{162200},\nonumber\\
+ g_2,\ldots,g_{11}&<\tau_0+B/\pint=\frac{16103731}{1271800},
+       \label{eq:globalcaps}\\
+ \sum_jg_j&<12\tau_0+B/\pe=\frac{623616}{20275}.
+       \nonumber
+\end{align}
+The final assertion uses
+$\sum g_j\leq12\tau_0+\sum(g_j-\tau_0)_+$ and
+$p_j\geq\pe$. It does not assume the gaps lie close to one or two.
+
+\section{The exact one-dimensional gate}
+
+\subsection{A point enclosure plus an analytic Lipschitz bound}
+
+For $x>0$, integration by parts in the Fourier integral yields
+\begin{equation}\label{eq:ibp}
+ k(x)=\frac{f(1/2)\sin(\pi x)-
+              \int_0^{1/2}f'(t)\sin(2\pi xt)\,dt}{\pi x}.
+\end{equation}
+Here $f=f_{u_{13}}$ on its support; the endpoint contribution is
+explicit, so no smooth extension by zero is assumed. The cosine
+part decreases on $[0,1/2]$. Hence
+\begin{align*}
+ |f(1/2)|+\int_0^{1/2}|f'(t)|\,dt
+ &\leq a+\sum_j|u_j|+2\sum_jj|u_j|\\
+ &\leq C:=\frac{27751}{22000}.
+\end{align*}
+For the perturbation this uses
+$\int_0^{1/2}|2\pi j\sin(2\pi jt)|\,dt=2j$.
+It follows that $|k(x)|\leq C/(\pi x)$. Differentiating
+\eqref{eq:ibp} gives
+\[
+ k'(x)=\frac{f(1/2)\cos(\pi x)}x-\frac{k(x)}x
+              -\frac2x\int_0^{1/2}t f'(t)\cos(2\pi xt)\,dt,
+\]
+so
+\begin{equation}\label{eq:decaybounds}
+ |k'(x)|\leq\frac Cx+\frac C{\pi x^2}.
+\end{equation}
+The integral formula and $f\leq M$ also give
+$|k'(x)|\leq\pi M/2$.
+
+For a closed rational interval $I=[l,r]$ with $l>0$, let
+$c=(l+r)/2$, $h=(r-l)/2$, and let
+$[k_{\lo},k_{\hi}]$ enclose $k(c)$ by Section 3. For an outward
+interval $[\pi_{\lo},\pi_{\hi}]$, define
+\begin{equation}\label{eq:KL}
+ K=\min\left(1,\frac C{\pi_{\lo}l}\right),\qquad
+ L=\min\left(\frac{\pi_{\hi}M}{2},
+                   \frac Cl+\frac C{\pi_{\lo}l^2}\right).
+\end{equation}
+Then $k(I)\subset[v,w]=[k_{\lo}-Lh,k_{\hi}+Lh]$.
+Put
+\begin{equation}\label{eq:absolutegate}
+ A_{\lo}=\max(0,v,-w),\qquad
+ A_{\hi}=\min(K,\max(|v|,|w|)).
+\end{equation}
+These bound $|k|$ below and above on $I$. Therefore
+\begin{equation}\label{eq:Wgate}
+ \frac{A_{\lo}^2}{6}+p(l-\tau_0)
+ \ \leq\ W_p(x)\ \leq\
+ \frac{A_{\hi}^2}{6}+p(r-\tau_0)\qquad(x\in I).
+\end{equation}
+Every operation here is on rational endpoints with outward rounding.
+This is a whole-interval argument derived from the derivative bound,
+not midpoint sampling.
+
+\subsection{Closed partition and retained components}
+
+For each of the two pressures, start with the closed interval
+$[\delta,\tau_0+B/p]$. If the lower bound in
+\eqref{eq:Wgate} is at least $B$, exclude the whole interval.
+Equality is sufficient because the sublevel under consideration is
+strict. If its upper bound is less than $B$, retain the interval.
+Otherwise bisect it unless its width is at most $1/16384$; such
+unresolved boundary intervals are retained. Any emergency budget
+exhaustion must also retain pending intervals. Neither uncertainty
+nor termination may silently discard a possible counterexample.
+
+The distributed gate checker completed both closed partitions.
+The endpoint gate has 50 excluded, 72 strictly passing,
+and 7 unresolved terminal intervals. The interior gate has 55,
+74, and 10 respectively. No emergency budget was exhausted.
+Across both pressures, each run visited 534 cells and used 519
+distinct exact midpoint values. A preliminary envelope-only test,
+using $0\leq q\leq K^2$, can settle a cell without a point evaluation.
+Exact sorting, shared
+endpoints, and total interval lengths checked that the final leaves
+partitioned each initial domain. The ordinary and \texttt{-OO}
+executions agree in their mathematical output.
+
+Merging retained adjacent leaves gives two closed necessary components
+for each pressure. Their exact endpoints are recorded here so that
+no floating approximation is used to define a domain:
+\begin{align}
+ S_{\mathrm e}^{\rm gate}
+ &=\left[\frac{393403101917}{425197568000},
+         \frac{538442949829}{425197568000}\right],\nonumber\\
+ L_{\mathrm e}^{\rm gate}
+ &=\left[\frac{183665052303}{106299392000},
+         \frac{8164814247361}{425197568000}\right],\label{eq:gates}\\
+ S_{\mathrm i}^{\rm gate}
+ &=\left[\frac{770962919881}{833486848000},
+         \frac{1054606088081}{833486848000}\right],\nonumber\\
+ L_{\mathrm i}^{\rm gate}
+ &=\left[\frac{22558120767}{13023232000},
+         \frac{20694035057199}{1666973696000}\right].\nonumber
+\end{align}
+The following slightly enlarged domains suffice for the local
+arguments:
+\begin{equation}\label{eq:enlargeddomains}
+ S_{\mathrm e}=[459/500,317/250],\qquad
+ S_{\mathrm i}=[459/500,633/500],\qquad L=[5/3,\infty).
+\end{equation}
+The inclusions of \eqref{eq:gates} in the corresponding sets of
+\eqref{eq:enlargeddomains} are exact rational comparisons. Thus a
+strict counterexample has an S or L label at every coordinate.
+This does not label every arbitrary nonnegative twelve-tuple: the
+strict-counterexample hypothesis is indispensable.
+
+\section{Analytic short and long baselines, with reserves}
+
+\subsection{The short baseline $53/50$}
+
+We first prove, independently of any gate, that
+\begin{equation}\label{eq:shortbaseline}
+ \frac{q(x)}6+px\geq\tS p,\qquad \tS=\frac{53}{50},
+ \qquad x\geq459/500,
+\end{equation}
+for either pressure $p$.
+For $459/500\leq x\leq1$, the sine in
+\eqref{eq:kmonotone} is nonnegative. Exact integration gives
+\begin{align*}
+ -k'(x)&\geq m\frac{\sin(\pi x)-\pi x\cos(\pi x)}{\pi x^2}\\
+ &\geq m\frac{-\cos(\pi x)}x
+ \geq m\cos(\pi/10)>\frac{19m}{20}>\frac35.
+\end{align*}
+Here $x\geq.9$, $x\leq1$, and
+$\cos(\pi/10)\geq1-\pi^2/200>19/20$ using $\pi^2<10$.
+For $1\leq x\leq T:=1063/1000$, split the integral at
+$b=1/(2x)$. On $[0,b]$ the positive part is at least
+$m/(4\pi x^2)$. On $[b,1/2]$, use
+$|\sin(2\pi xt)|\leq2\pi x(t-b)$ and $t\leq1/2$ to bound
+the absolute negative part above by $M\pi(x-1)^2/(8x)$.
+Multiplying by $4\pi$ gives
+\begin{align}
+ -k'(x)&\geq\frac m{x^2}-\frac{M\pi^2(x-1)^2}{2x}
+ \geq\frac m{T^2}-5M(T-1)^2\nonumber\\
+ &=\frac35+\frac{366235595129}{62148295000000}>\frac35.
+ \label{eq:shortderivative}
+\end{align}
+This proves $-k'>3/5$ throughout $[459/500,1063/1000]$.
+
+The exact point evaluation
+\begin{equation}\label{eq:shortpoint}
+ k(53/50)\in
+ [0.001990173438104262028271,\ 0.001990173438104262028272]
+\end{equation}
+has lower endpoint greater than both $a_S:=19/10000$ and
+$5\pint$. On $[459/500,\tS]$ we therefore have
+$k(x)\geq k(\tS)>0$ and
+\[
+ \frac{d}{dx}\{q(x)/6+px\}=k(x)k'(x)/3+p
+       \leq-k(\tS)/5+p<0.
+\]
+The nearest cost is at least its value at $\tS$, which is at
+least $p\tS$. For $x\geq\tS$, pressure alone proves
+\eqref{eq:shortbaseline}. No derivative assertion beyond the
+stated finite interval is used.
+
+There is also a useful explicit reserve. For
+$459/500\leq s\leq\tS$ put $d=\tS-s$. Integrating
+\eqref{eq:shortderivative} gives $k(s)\geq a_S+(3/5)d$.
+Consequently
+\begin{equation}\label{eq:shortreserve}
+ r_{S,p}(s):=q(s)/6+p(s-\tS)
+ \geq\frac{a_S^2}{6}+(a_S/5-p)d+\frac3{50}d^2.
+\end{equation}
+All three coefficients are positive for both pressures.
+
+\subsection{The long baseline $203/100$}
+
+Put $A=\sqrt2\cot z=2z\cot z$. The same elementary sine and
+cosine estimates give $3/2\leq A\leq24/11$. Differentiating
+\eqref{eq:rationalkernel}, with $v=\pi x$, yields
+\begin{equation}\label{eq:k0longderivative}
+ k_0'(x)=\frac{\pi}{(2v^2-1)^2}
+ \left[(2Av^3+(4-A)v)\cos v
+       -(2(A-1)v^2+1+A)\sin v\right].
+\end{equation}
+On $5/3\leq x\leq41/20$ we have $v>5$, $\cos v\geq1/2$,
+$\sin v\leq\pi/20$, and $4-A>0$. The bracket is therefore at
+least
+$Q(v)=Av^3-(\pi/20)(2(A-1)v^2+1+A)$.
+Using $\pi^2<10$, $A-1\leq13/11$, $1+A\leq35/11$, and $v>5$
+gives
+\begin{equation}\label{eq:Qbound}
+ \frac{\pi Q(v)}{4v^4}
+ \geq\frac{15}{82}-\frac12\left(\frac{13}{550}
+                                      +\frac{35}{27500}\right)
+ =\frac{15}{82}-\frac{137}{11000}>0.
+\end{equation}
+For the first term we used
+$\pi A/(4v)=A/(4x)\geq15/82$. Since $Q>0$, replacing
+$(2v^2-1)^2$ by the larger $4v^4$ in the positive lower bound is
+legitimate. Hence \eqref{eq:Qbound} is a lower bound for $k_0'$.
+
+The perturbation has absolute coefficient sum $4/125$, and therefore
+\[
+ |(k-k_0)'(x)|\leq2\pi\int_{-1/2}^{1/2}|t|
+       \sum_j|u_j|\,dt=\frac{2\pi}{125}<\frac{44}{875}.
+\]
+Combining this with \eqref{eq:Qbound} proves
+\begin{equation}\label{eq:longderivative}
+ k'(x)\geq\frac{15}{82}-\frac{137}{11000}-\frac{44}{875}
+       =\frac3{25}+\frac{589}{3157000}>\frac3{25}
+ \quad(5/3\leq x\leq41/20).
+\end{equation}
+The exact point evaluation is
+\begin{equation}\label{eq:longpoint}
+ k(203/100)\in
+ [-0.008907305837779524800319,\ -0.008907305837779524800318],
+\end{equation}
+so $k(\tL)<-1/125$ for $\tL:=203/100$.
+For $5/3\leq x\leq\tL$, put $d=\tL-x$ and integrate
+\eqref{eq:longderivative} to get
+$k(x)\leq-1/125-(3/25)d$. Thus
+\begin{equation}\label{eq:longreserve}
+ r_{L,p}(x):=q(x)/6+p(x-\tL)
+ \geq\frac1{93750}+(1/3125-p)d+\frac3{1250}d^2.
+\end{equation}
+The linear coefficient is positive, since
+$1/3125-\pint=1321/24000000>0$. For $x\geq\tL$,
+nonnegativity of $q$ and pressure suffice. We have proved the entire
+half-line baseline
+\begin{equation}\label{eq:longbaseline}
+ q(x)/6+px\geq\tL p\qquad(x\geq5/3)
+\end{equation}
+for both pressures. Neither this proof nor the short proof uses
+derivative samples.
+
+\subsection{Pattern budgets and safe use of reserves}
+
+Fix any S/L label pattern permitted by the gates, and put $t_j=\tS$
+on S coordinates and $t_j=\tL$ on L coordinates. Define
+\begin{equation}\label{eq:patternAD}
+ A_{\rm pat}=\sum_jp_jt_j,\qquad
+ \Delta_{\rm pat}=\eps-A_{\rm pat}.
+\end{equation}
+For a strict counterexample, the two baselines and $w_{p_j}(g_j)\geq
+p_jg_j$ imply
+\begin{equation}\label{eq:patterncaps}
+ \sum_jp_j(g_j-t_j)_+<\Delta_{\rm pat},\qquad
+ g_j<t_j+\frac{\Delta_{\rm pat}}{p_j},\qquad
+ \sum_jg_j<\sum_jt_j+\frac{\Delta_{\rm pat}}{\pe}.
+\end{equation}
+If there are $a$ long interior and $b$ long endpoint coordinates,
+these constants have the closed form
+\begin{align}
+ A_{a,b}&=\frac{53}{50}P+\frac{97}{100}(a\pint+b\pe),
+       \nonumber\\
+ \Delta_{a,b}&=\frac{12133}{4000000}
+                   -\frac{97}{100}(a\pint+b\pe),\label{eq:countbudgets}\\
+ \sum_jt_j&=12\frac{53}{50}+\frac{97}{100}(a+b).\nonumber
+\end{align}
+All 33 budgets, $0\leq a\leq10$, $0\leq b\leq2$, are positive:
+the largest baseline is the all-long baseline, whose deficit is
+$1083/8000000>0$. Thus these scalar budgets alone exclude no complete
+label pattern, and they do not make arrangements with the same
+counts equivalent for the longer-distance energy terms.
+
+There is a useful optional closed span bound from the upper gate
+endpoints $U_{eS},U_{eL},U_{iS},U_{iL}$ in \eqref{eq:gates}.
+Let
+\begin{align*}
+ Z_e&=(2-b)(U_{eS}-\tS)+b(U_{eL}-\tL),\\
+ Z_i&=(10-a)(U_{iS}-\tS)+a(U_{iL}-\tL),\\
+ z_e&=\min(Z_e,\Delta/\pe),\qquad
+ z_i=\min(Z_i,\max(\Delta-\pe z_e,0)/\pint).
+\end{align*}
+Then $\sum g_j\leq\sum t_j+z_e+z_i$. Indeed, relax the
+positive excesses $v_j=(g_j-t_j)_+$ to
+$0\leq v_j\leq U_j-t_j$, $\sum p_jv_j\leq\Delta$.
+Since $\pe<\pint$, exchanging interior excess for available
+endpoint excess improves the span at no greater cost. Spend the
+budget on the two endpoint coordinates first, then the interiors;
+this gives exactly $z_e+z_i$. This bound is stated non-strictly.
+It does not authorize an equality rejection appropriate only to the
+strict caps in \eqref{eq:patterncaps}.
+
+The polynomial reserves \eqref{eq:shortreserve} and
+\eqref{eq:longreserve} bound the nearest terms including their
+pressures. On a box they may replace a weaker lower bound for that
+same nearest term. They must not be added to an energy estimate that
+has already spent it. If all coordinates except $j$ have nonnegative
+residual reserves $\sigma_\ell$, a valid further necessary cap is
+$g_j<t_j+(\Delta-\sum_{\ell\ne j}\sigma_\ell)/p_j$.
+The reserve for coordinate $j$ is deliberately absent from the sum.
+
+\section{One adjacent-long-gap credit}
+
+\subsection{A pressure choice dominated by both actual choices}
+
+For $x\geq5/3$ define
+\begin{equation}\label{eq:worstlong}
+ \phi_L(x)=
+ \begin{cases}
+ \pint(x-\tL),&x\leq\tL,\\
+ \pe(x-\tL),&x\geq\tL,
+ \end{cases}
+ \qquad r_L^*(x)=q(x)/6+\phi_L(x).
+\end{equation}
+This is the minimum of the two actual long residuals. Hence it is
+nonnegative by \eqref{eq:longbaseline} and no greater than either
+$r_{L,p}(x)$. The function $\phi_L$ is increasing and continuous,
+with its only slope change at $\tL$.
+
+The adjacent-long credit is the whole-domain inequality
+\begin{equation}\label{eq:LLcredit}
+ r_L^*(x)+r_L^*(y)+\frac2{11}q(x+y)
+       \geq K_L:=\frac3{100000}\qquad(x,y\geq5/3).
+\end{equation}
+Here is its analytic compactification and finite certificate.
+Let
+\begin{equation}\label{eq:longP}
+ P_L(d)=\frac1{93750}+\frac{1321}{24000000}d+\frac3{1250}d^2.
+\end{equation}
+It increases for $d\geq0$. If $x\leq39/20$, then
+$d=\tL-x\geq2/25$ and
+$r_L^*(x)\geq P_L(2/25)=3043/10^8>K_L$.
+If $x\geq\tL+K_L/\pe=179033/81100$, its pressure residual
+alone pays $K_L$. The same applies to $y$. It remains to cover
+the closed square
+\begin{equation}\label{eq:LLcore}
+ [39/20,179033/81100]^2.
+\end{equation}
+
+\subsection{The complete scalar tables and finite square}
+
+For the six-mode profile the distributed generator completed scalar
+tables using grid $G=500$,
+128-bit precision, and 15393 entries. The unused prefix below index
+462 has nonnegative lower bound zero and unavailable curvature
+$-\infty$; entries from 462 onward were computed on the entire
+closed cells using Section 3. The complete-table digests are
+\begin{quote}\footnotesize
+$q$:
+\path{720514E4C09259C32629BBA740B5F7E3D61A3E85F6389AD7AE27BC61C0BB305C}
+
+$q''$:
+\path{A67323D95F9407B91ACF10BB517C60D8F4B2BB9CB73DA8E4AFC2523630EA0CB2}.
+\end{quote}
+The package includes the generated tables and their source-bound
+generation record. Its format specifies the exact profile, closed-cell
+convention, entry count, precision, unavailable prefix and byte order.
+The generator rebuilds the enclosures; matching a stored digest alone
+does not establish them. No twelve-dimensional covering claim is made
+by this scalar calculation.
+
+The square \eqref{eq:LLcore} is covered outwards by cell indices
+$975,\ldots,1103$, giving 129 choices for each coordinate. Let
+$Q_i$ be its exact represented binary64 lower bound for $q$ and put
+$R_i=\max(0,Q_i/6+\phi_L(i/500))$. The maximum with zero is valid
+because the true residual is nonnegative. For cells $(i,j)$ the
+test is the exact rational comparison
+\begin{equation}\label{eq:LLcell}
+ R_i+R_j+\frac2{11}\min(Q_{i+j},Q_{i+j+1})\geq K_L.
+\end{equation}
+Both sum cells are present; they cover the full interval for $x+y$.
+The expression is symmetric, so all $129\cdot130/2=8385$
+unordered pairs suffice. Each of the four triple invocations below
+recomputed all 8385 comparisons before using an LL replacement, both
+in ordinary and optimized Python. The smallest lower bound
+was
+\begin{equation}\label{eq:LLminimum}
+ \frac{23653871141765599661283}{634106827533765836800000000}
+       >\frac3{100000}.
+\end{equation}
+Together with the closed tails, this proves \eqref{eq:LLcredit}
+subject to the completed-table arithmetic boundary described above.
+
+A use of \eqref{eq:LLcredit} replaces its two nearest residuals and
+their connecting lag-two energy term by $K_L$. It does not add
+$K_L$ while retaining those terms unchanged. In a longer string,
+such replacements can be made on disjoint adjacent pairs. For
+example, maximum matching credits $w_j$ along a path can be
+selected by the elementary recurrence
+$D_0=D_1=0$, $D_v=\max(D_{v-1},D_{v-2}+w_{v-1})$.
+Two neighboring LL replacements sharing a middle residual may not
+be added. Only this disjoint replacement principle is needed below.
+
+\section{Four triple inequalities and their finite cores}
+
+For labels $T_1,T_2,T_3\in\{L,S\}$ define the local triple cost
+\begin{equation}\label{eq:triplecost}
+ C_{T_1T_2T_3}(x,y,z)=r_1(x)+r_2(y)+r_3(z)
+       +\frac2{11}\{q(x+y)+q(y+z)\}+\frac15q(x+y+z),
+\end{equation}
+using $r_L^*$ for every L and the actual pressure residual
+$r_{S,p}$ for each S. The four completed assertions are
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Labels & Domains by label & Lower bound\\
+\midrule
+$LLL$ & $L=[5/3,\infty)$ & $\lambda=9/100000$\\
+$SLL_{\mathrm i}$ & $S_{\mathrm i},L,L$ & $\mu=293723/2400000000$\\
+$LSL_{\mathrm i}$ & $L,S_{\mathrm i},L$ & $\mu=293723/2400000000$\\
+$SLL_{\mathrm e}$ & $S_{\mathrm e},L,L$ & $\mu_e=28447/480000000$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The short domains are those of \eqref{eq:enlargeddomains}. Full
+reversal gives the corresponding $LLS$ assertions. Exchanging only
+the two long arguments of $SLL$ is not a symmetry of
+\eqref{eq:triplecost}; the two adjacent-sum slots would change.
+
+Every residual and every remaining energy term in
+\eqref{eq:triplecost} is nonnegative on its domain. This permits a
+single variable's reserve to pay the whole target in a tail. For
+the first three rows, write $\eta$ for their target. The long core is
+\begin{equation}\label{eq:newlongcore}
+ [17/10,\ \tL+\eta/\pe].
+\end{equation}
+Below its lower endpoint, $d\geq33/100$ and
+$P_L(d)\geq P_L(33/100)>\max(\lambda,\mu)$ by exact rational
+comparison. Above its upper endpoint, $\phi_L(x)\geq\eta$.
+For an interior S, only the core
+\begin{equation}\label{eq:newshortcore}
+ [47/50,633/500]
+\end{equation}
+remains: for $s\leq47/50$, the positive polynomial in
+\eqref{eq:shortreserve} at $d=3/25$ already exceeds $\mu$.
+The upper endpoint is the enlarged gate, not an extrapolated
+derivative range.
+
+The inherited completed endpoint mixed cover uses the cores
+\begin{equation}\label{eq:endpointcores}
+ S:[103/100,317/250],\qquad
+ L:[189/100,203/100+28447/81100].
+\end{equation}
+The long lower tail is paid because
+$P_L(14/100)=78495/1200000000>\mu_e$.
+For the short lower tail, $d\geq3/100$ and the last two terms of
+\eqref{eq:shortreserve}, with $p=\pe$, already exceed $\mu_e$.
+The long upper endpoint is precisely $\tL+\mu_e/\pe$.
+All these cores and tails are closed; any overlap is harmless, and
+there is no omitted boundary between them.
+
+\section{Exact adaptive and atomic triple verification}
+
+\subsection{An integer lower bound for whole boxes}
+
+The triple covers reuse the completed grid-500 tables. Round each
+finite rational core outwards to inclusive cell indices and take
+their Cartesian product. For an adaptive box $[a_j,b_j]$, use the
+full sum ranges in \eqref{eq:sumindices}, now for one, two, or
+three coordinates. A range minimum supplies the lower $q$ value
+over every required distance.
+
+The interval and LL-replacement tests can be implemented with integer
+fixed-point arithmetic of scale $S=2^{80}$. Set
+$T_i=\floor{S Q_i}$, regarding the binary64 value $Q_i$ as its
+exact rational value. For a single coordinate cell a safe residual
+integer is
+\begin{equation}\label{eq:fixedresidual}
+ \max\left(0,\floor{T_i/6}
+                    +\floor{S\phi(i/500)}\right),
+\end{equation}
+where $\phi$ is its actual short pressure residual or the
+piecewise long pressure in \eqref{eq:worstlong}. Precompute this
+residual bound for every coordinate cell. For a wider coordinate
+interval, the implemented bound takes the minimum of those residual
+bounds over all its cells; each individual cell bound is valid on
+its entire closed cell. One could instead take a range minimum of
+$T_i$ and use the leftmost pressure value, but that generally gives
+a weaker lower bound and is not the recorded residual-table rule.
+Flooring a negative pressure contribution means rounding toward
+$-\infty$, not truncating toward zero. Each of the two lag-two
+contributions and the lag-three contribution is also multiplied by
+its exact coefficient and floored downwards. Accept only if the
+sum of these integers is at least $\ceil{S\eta}$.
+
+If two adjacent labels are L, one alternative bound replaces their
+two residuals and connecting lag-two term by
+$\floor{S K_L}$, retaining the other residual and unused energy
+slots. When both adjacent pairs are LL, take the maximum of the
+two alternatives, not their sum. The ordinary interval lower bound
+is another alternative. Every accepted lower bound therefore uses
+each of the six slots of \eqref{eq:triplecost} at most once.
+
+Bisect the widest nonsingleton integer coordinate range as in
+Section 4. Reversal can remove only boxes whose entire reflected
+box is represented by the retained half: for $LLL$ and $LSL$ the
+first and third label domains agree, whereas no internal reversal
+reduction is made in $SLL$. A valid implementation retains
+diagonal or overlapping ranges for further examination instead of
+discarding them on the basis of a center ordering.
+
+\subsection{A rigorous derivative from three exact point values}
+
+The preceding tests leave some atomic cells
+unresolved. The following exact quadratic test closes them without
+requiring a finer scalar grid. Let $h=10^{-12}$. By
+\eqref{eq:globalderivative}, $q'$ is Lipschitz with constant
+$4\pi^2$. The centered difference is its average over
+$[x-h,x+h]$, so
+\begin{align}
+ \left|q'(x)-\frac{q(x+h)-q(x-h)}{2h}\right|
+ &\leq\frac{4\pi^2}{2h}\int_{-h}^h|v|\,dv
+   =2\pi^2h.\label{eq:finiteerror}
+\end{align}
+Using the rational point evaluator for $q(x-h)$ and $q(x+h)$,
+and $2\pi_{\hi}^2h$ as the error allowance, gives an exact
+rational interval for $q'(x)$. Cancellation may widen this
+interval, but cannot invalidate it. All required centers and
+their two probes are above $.9$. The guarded below-one formula
+in Section 3 is therefore available when a short midpoint is
+below one; an $x\geq1$ routine is not silently applied outside
+its domain.
+
+\subsection{The full atomic Hessian and exact LDL test}
+
+The long pressure kink is at $\tL=2.03$, exactly grid boundary
+1015. Every closed atomic grid-500 cell lies on one side. Its
+appropriate affine branch agrees with the true pressure at every
+point of the closed cell, including a shared endpoint. The short
+pressure is already affine. Thus on an atomic triple cell, with
+coordinates $g=(x,y,z)$, the true cost has affine pressure and
+Hessian
+\begin{equation}\label{eq:triplehessian}
+ \nabla^2 C(g)=\sum_{e=1}^6 c_e q''(a_e^Tg)a_ea_e^T,
+\end{equation}
+where the six pairs $(a_e,c_e)$ are
+\begin{equation}\label{eq:incidences}
+ \begin{gathered}
+ ((1,0,0),1/6),\quad ((0,1,0),1/6),\quad((0,0,1),1/6),\\
+ ((1,1,0),2/11),\quad((0,1,1),2/11),\quad((1,1,1),1/5).
+ \end{gathered}
+\end{equation}
+For an atomic tuple $(i,j,k)$, the lag-two curvature ranges
+include both indices $i+j,i+j+1$ and $j+k,j+k+1$. The
+lag-three range includes $i+j+k,i+j+k+1,i+j+k+2$.
+Let $\ell_e$ be the minimum of the corresponding complete
+curvature range, interpreted as an exact rational lower bound.
+Then
+\begin{equation}\label{eq:tripleM}
+ M=\sum_ec_e\ell_ea_ea_e^T\preceq\nabla^2C(g)
+\end{equation}
+throughout the atomic cell. Missing or nonfinite curvature disables
+this test; it is never changed to zero to obtain positive pivots.
+
+Let $g_0=((2i+1),(2j+1),(2k+1))/(2G)$ be the rational center.
+Compute the LDL factorization $M=LDL^T$ with exact rational
+arithmetic. If any pivot is nonpositive, this criterion gives no
+acceptance. When every pivot is strictly positive, Taylor's
+integral remainder on the segment inside the box gives
+\begin{align}
+ C(g)&\geq C(g_0)+\nabla C(g_0)^T(g-g_0)
+                        +\tfrac12(g-g_0)^TM(g-g_0)\nonumber\\
+ &\geq C(g_0)-\tfrac12\nabla C(g_0)^TM^{-1}\nabla C(g_0).
+ \label{eq:atomictaylor}
+\end{align}
+The second line minimizes the lower quadratic over all of
+$\R^3$. Neither a stationary point of $C$ nor the minimizing
+point of that quadratic needs to be inside the cell.
+
+Enclose $C(g_0)$ and its gradient using the exact point values
+and \eqref{eq:finiteerror}. These evaluations use the actual
+unclipped residual functions in \eqref{eq:triplecost}, not the
+maximum with zero used in an independent interval lower bound.
+For a gradient interval vector $G$, interval forward substitution
+gives $Y=L^{-1}G$. If $Y_j=[l_j,u_j]$, put
+\begin{equation}\label{eq:atomicU}
+ U=\sum_{j=1}^3\frac{\max(|l_j|,|u_j|)^2}{D_j}.
+\end{equation}
+All $D_j$ are positive, so $U$ is an upper bound for the
+quadratic debit despite dependencies between interval components.
+The exact rational acceptance condition is
+\begin{equation}\label{eq:atomicaccept}
+ C(g_0)_{\lo}-U/2\geq\eta.
+\end{equation}
+No LL matching credit is added to this bound: the six original
+slots have already been used to define $C$. Failed pivots,
+inadequate lower bounds, domain-guard failures, or interrupted
+point evaluation produce no acceptance.
+
+The adaptive cover is complete only when both its pending stack
+and its unresolved terminal list are empty. If a budget interrupt
+occurs during atomic work, the current box is restored to pending
+work. Node identities and exact covered atomic volumes are checked
+in addition to, not instead of, the source's exhaustive traversal.
+
+\section{Completed triple evidence and the exact assembly}
+
+\subsection{What was actually executed}
+
+The completed endpoint mixed computation needed no atomic Taylor
+test. It visited 77 nodes with 38 splits and 39 accepted leaves:
+37 interval leaves and 2 LL-replacement leaves. Ordinary and
+optimized executions completed the full outward core in
+\eqref{eq:endpointcores}.
+
+The other three rows were completed with the atomic rule above,
+both in ordinary Python and with \texttt{-OO}. The recorded
+counts agree in both modes:
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Case & Nodes & Splits & Interval & LL & Taylor & Reversal\\
+\midrule
+$LLL$ & 4117 & 2058 & 1059 & 9 & 868 & 123\\
+$SLL_{\mathrm i}$ & 2553 & 1276 & 1106 & 2 & 169 & 0\\
+$LSL_{\mathrm i}$ & 263 & 131 & 119 & 0 & 0 & 13\\
+\bottomrule
+\end{tabular}
+\end{center}
+Every row has one initial root and zero pending or unresolved
+terminal boxes. The maximum depths are respectively 27, 27, and
+22. The outward core atomic volumes are respectively
+$80621568$, $45441792$, and $45441792$. They are volumes of
+adaptive leaves, not counts of point samples. In the symmetric
+rows, the proved and reversal-accounted volumes are respectively
+$78952385+1669183$ for $LLL$ and
+$42186303+3255489$ for $LSL_{\mathrm i}$; the $SLL_{\mathrm i}$
+cover uses no reversal reduction.
+
+These are completed executions of the distributed sources. All
+1037 Taylor-accepted atomic cells were checked with rational matrix
+lower bounds, LDL factors, center and gradient intervals, and
+quadratic debits. The compact receipts retain exact canonical
+digests and counts of these generated objects, not the detailed
+matrices or point cache. The optional \texttt{--detailed} switch
+saves those objects in a fresh execution. The ordinary and optimized
+receipts agree after removal only of the optimization flag and
+the three declared timing fields. Checking the Taylor cells alone
+would still not prove an entire cover: the interval leaves, LL
+leaves, legitimate symmetries, roots, splits and zero pending volume
+remain indispensable.
+
+\subsection{The 78-term allocation}
+
+Partition the twelve gaps into the four consecutive triples
+\begin{equation}\label{eq:partition}
+ (g_1,g_2,g_3),\quad(g_4,g_5,g_6),\quad
+ (g_7,g_8,g_9),\quad(g_{10},g_{11},g_{12}).
+\end{equation}
+Let $C_b^{\rm actual}$ denote \eqref{eq:triplecost} with the
+actual pressure at every coordinate, rather than the dominated
+long choice $r_L^*$. With $A_{\rm pat}$ from
+\eqref{eq:patternAD}, direct allocation of terms gives
+\begin{equation}\label{eq:assemblyidentity}
+ F=A_{\rm pat}+\sum_{b=1}^4C_b^{\rm actual}+R,
+ \qquad R\geq0.
+\end{equation}
+The allocation can be checked by the following inventory:
+\begin{center}\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Distance in gaps & Original slots & Four triples & Remainder\\
+\midrule
+$h=1$ & 12 & 12 & 0\\
+$h=2$ & 11 & 8 & 3\\
+$h=3$ & 10 & 4 & 6\\
+$4\leq h\leq12$ & 45 & 0 & 45\\
+\midrule
+Total & 78 & 24 & 54\\
+\bottomrule
+\end{tabular}
+\end{center}
+Each used slot has its unchanged original coefficient, namely
+$1/6$, $2/11$, or $1/5$. Each pressure occurs once, through its
+baseline plus its residual. All 54 unused energy slots are
+nonnegative. By \eqref{eq:worstlong}, each certified worst-pressure
+triple is no greater than $C_b^{\rm actual}$.
+
+If there is exactly one interior S, its baseline deficit is
+\begin{equation}\label{eq:interiordeficit}
+ \eps-A_{\rm pat}=\frac{1083}{8000000}
+                         +\frac{97}{100}\pint
+    =\frac{941723}{2400000000}=3\lambda+\mu.
+\end{equation}
+The S is the middle coordinate of its block at positions
+$2,5,8,11$, using $LSL_{\mathrm i}$. At positions
+$3,4,6,7,9,10$ it is an end coordinate, using $SLL_{\mathrm i}$
+or its reversed $LLS_{\mathrm i}$ assertion. The other three
+blocks are $LLL$. Thus both interior placements are proved, and
+\begin{equation}\label{eq:interiorconclusion}
+ F\geq\frac{31}{5000}
+ \quad\hbox{on every retained interior-one-short region}.
+\end{equation}
+No additional positive uniform margin is claimed here.
+
+For either endpoint S, the mixed bound is $\mu_e$. Its deficit
+is
+\begin{equation}\label{eq:endpointdeficit}
+ \eps-A_{\rm pat}=\frac{143647}{480000000}
+          =3\left(\frac1{12500}\right)+\mu_e.
+\end{equation}
+Since $\lambda-1/12500=1/100000$, the three all-long blocks
+now improve this to
+\begin{equation}\label{eq:endpointconclusion}
+ F\geq0.00623
+ \quad\hbox{on both retained endpoint-one-short regions}.
+\end{equation}
+If all twelve gaps are L, all four triples use $\lambda$ and
+\begin{equation}\label{eq:alllongconclusion}
+ F\geq\tL P+4\lambda
+       =\frac{51397}{8000000}=0.006424625.
+\end{equation}
+There are thirteen labeled regions here: the all-long region and
+twelve one-short regions, seven classes under full reversal. This
+count is not a percentage of the full orthant that has been proved.
+
+\section{Why the mixed credit was rebalanced, and what remains open}
+
+The stronger standalone interior mixed credit
+$\mu_{\rm old}=365723/2400000000$ is false. This can be
+demonstrated without an optimizer or a cover: evaluate the exact
+rational triple
+\begin{equation}\label{eq:oldwitness}
+ (x,y,z)=(1.05423,\ 2.009397,\ 2.026457).
+\end{equation}
+The point evaluator of Section 3 and the exact cost
+\eqref{eq:triplecost} give
+\begin{equation}\label{eq:oldwitnessvalue}
+ C_{SLL_{\mathrm i}}(x,y,z)\in
+ [0.000132480370716898210350,\ 0.000132480370716898210351].
+\end{equation}
+The upper endpoint is below $\mu_{\rm old}$ and above the new
+target $\mu$. Both long coordinates are below $\tL$, so their
+worst-pressure residuals equal the actual interior-pressure
+residuals. The failure is therefore not an artifact of incompatible
+pressure choices. It refutes that local credit only, not the full
+objective \eqref{eq:F13}.
+
+The successful correction has a precise budget interpretation.
+Increasing each of the three $LLL$ credits in a one-short
+decomposition from $.00008$ to $.00009$ lowers the required
+mixed credit by $.00003$. That is exactly
+$\mu_{\rm old}-\mu$. The smaller mixed credit is established
+on its whole domain by the completed computations, not inferred
+from the single point \eqref{eq:oldwitness}.
+
+Combining the scalar gate with
+\eqref{eq:interiorconclusion}--\eqref{eq:alllongconclusion}
+now gives the precise remaining boundary:
+\begin{equation}\label{eq:remaining}
+ F(g)<31/5000\quad\Longrightarrow\quad
+ \text{at least two coordinates have a retained short label}.
+\end{equation}
+Whether such a strict counterexample exists is unresolved here.
+The multi-short regions have not been certified. No universal
+thirteen-point floor, no extra global zero-count decimal, and no
+worldwide record-priority assertion follows from this local
+completion. In particular, the two seven-point inputs to the main
+manuscript remain exactly \eqref{eq:rowC} and \eqref{eq:rowH}.
+
+\section{Reproduction and the scope of the package}
+
+A self-contained reproduction has two logically distinct checks.
+The first evaluates the main manuscript's scalar count expressions
+from the two exact row configurations. Such an evaluation is
+conditional on the local rows; it is not a replay of them. The
+second runs a complete local verifier with the actual profile,
+pressure, floor, whole-cell tables, acceptance rules, and exhaustive
+coverage. The distributed package identifies these roles separately
+as \texttt{verify\_counts.py} and
+\texttt{verify\_local\_rows.py}. Its README and manifest specify
+the commands actually supplied, their optional supplementary
+stages, and the execution status of each distributed source.
+
+For the thirteen-point local results, the mathematical reproduction
+sequence is: the rational scalar bootstrap and closed gate; the
+short and long point checks together with the analytic derivative
+proofs; generation or full revalidation of the six-mode scalar
+tables; the LL square; the endpoint mixed cover; the three final
+triple covers with their atomic rule; and the exact assembly.
+The distributed \texttt{build\_supplement\_tables.py} constructs
+only the scalar tables. The entry point
+\texttt{verify\_supplement.py} separates the cases
+\texttt{baselines}, \texttt{LL}, \texttt{LLL},
+\texttt{SLL\_i}, \texttt{LSL\_i}, \texttt{SLL\_e}, and
+\texttt{witness}; none of these is a full twelve-gap cover.
+The scalar-gate command and the completed receipt filenames are
+specified in the accompanying README. The program
+\path{assemble_supplement.py} binds the gate and all four
+source-generated triple receipts to the distributed sources and
+scalar data, then checks the exact regional allocation. It is a
+consistency-and-assembly checker, not an independent validator of
+arbitrary supplied proof logs. The reconstruction commands establish
+its local premises.
+Every stage is described above. A finite table can be distributed as an acceleration, but a
+verifier must know how to establish each of its whole-cell
+enclosures. Simply matching a stored digest establishes only that
+the same table has been read.
+
+All acceptance guards must remain active under optimized Python;
+they must use explicit checked conditions rather than removable
+assertions. A bounded run may finish with an honest incomplete
+status. A modified program needs its own source-bound
+completed receipt before its output is described as a fresh replay.
+
+This distinction is especially important here. The available
+completed records establish the two adopted seven-point rows and
+the specific thirteen-point local regions above, subject to the
+explicit computational trust boundary. They do not establish a
+complete thirteen-point target. The supplement supplies a linear,
+independently readable proof of what those records mean, while
+leaving that final unresolved question visible.
+
+\begin{thebibliography}{9}
+\bibitem{ainta}
+Ainta, \emph{zeta-simple-zeros}, MIT-licensed source code,
+commit \texttt{040c5e899e658aed7b56a2a87f501798fe10761d},
+\url{https://github.com/ainta/zeta-simple-zeros/tree/040c5e899e658aed7b56a2a87f501798fe10761d}.
+The original scalar-cell and convex-tangent engine and the cosine
+seven-point verification are attributed to this source; adapted
+portions retain its license.
+\end{thebibliography}
+\end{document}

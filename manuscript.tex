@@ -1,0 +1,1217 @@
+\documentclass[11pt]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,mathtools,booktabs}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\numberwithin{equation}{section}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\HS}{\mathrm{HS}}
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\Nd}{N^{\rm d}}
+\newcommand{\ind}{\mathbf 1}
+\newcommand{\osc}{\operatorname{osc}}
+\title[Compensated Gram corrections and zero counts]{Compensated Gram corrections for zero counts of the Riemann zeta function}
+\author{R. Arun Chandru}
+\address{Department of Aerospace Engineering \\ Indian Institute of Science}
+\email{arun.chandru@gmail.com}
+\date{10 September 2026}
+\subjclass[2020]{Primary 11M26; Secondary 15A42, 65G20}
+\keywords{Riemann zeta function, Gram matrix, zero multiplicity, pair correlation}
+\begin{document}
+\begin{abstract}
+We develop a compensated Gram-matrix correction for counting zeros of the
+Riemann zeta function. A single averaged matrix witness combines overlapping
+local windows without an outer-block loss. Its admissible local floor depends
+on the spectral clipping threshold; this dependence permits a stronger
+correction for the union of simple and critical-line zeros and for
+low-multiplicity counts than for the simple-critical intersection.
+Combining the finite argument with unconditional pair correlation and two
+computer-assisted seven-point inequalities gives lower limiting proportions
+exceeding $0.888554068993217696$ for simple-or-critical zero mass,
+$0.837368508521536857$ for mass of multiplicity at most two, and
+$0.939197203148497742$ for locations of multiplicity at most two among
+distinct locations. Each improves an explicitly identified same-statistic
+comparison. We also obtain a simple-critical bound, a total-distinct bound,
+fixed higher-multiplicity-cutoff families, and qualified short-height
+extensions. The analytic deductions and the finite certification rules are
+given explicitly. Supplement information treats the numerical certificates
+and a local thirteen-point reduction; that reduction is not used as a
+whole-domain inequality or as a further zero-count improvement.
+\end{abstract}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+The distinction between a zero and a zero location is essential in questions
+about multiplicity. So is the distinction between being simple \emph{and}
+lying on the critical line and being simple \emph{or} lying there. These
+questions share analytic information, but they spend that information in
+different ways. A method that improves one count need not improve another.
+This work tries to make that distinction effective through a
+finite Gram-matrix argument.
+
+The starting point is the unconditional pair-correlation theorem of Baluyot,
+Goldston, Suriajaya and Turnage-Butterbaugh \cite{BGST}. The recent arguments
+of Alp\"oge--Furman and Lamzouri \cite{AF,Lamzouri} connect this analytic
+input to the simultaneous simplicity and criticality of more than two thirds
+of the zeros. Local Gram corrections, including computer-assisted weighted
+overlap inequalities, subsequently appear in the public work of Ainta and
+Shi \cite{Ainta,Shi}. Waddle's public low-multiplicity draft \cite{Waddle}
+provides a further useful comparison: its scalar multiplicity accounting
+can be strengthened by retaining the entire simple-real Gram block.
+
+Our contribution is a finite transfer mechanism and its application to these
+different counts. The main point is not to add unrelated local estimates to
+a spectral bound. Instead, all overlapping windows are represented inside
+one admissible matrix witness. The quadratic cost of that witness pays for
+their overlap. A row-sum estimate then controls the windows that require
+clipping. Since that control grows as the square of the clipping threshold,
+a local floor that is too large for the simple-critical argument can still
+be used for the union and multiplicity arguments.
+
+There are two independent numerical inputs. One is Ainta's seven-point
+cosine-kernel inequality, which we credit as prior work. The other uses an
+explicit two-mode perturbation of the same density. The perturbation raises
+the analytic energy, so its local improvement is useful only after both
+effects have been included in the same calculation. We give the exact
+formulas, rather than combining the energy of one kernel with the local
+certificate of another. The computer-assisted inputs are whole-domain
+inequalities, not sampled minima. Their finite acceptance rules and
+reproducibility requirements are supplied in the accompanying supplement.
+
+All results in this article concern ordinary nontrivial zeros of $\zeta$.
+Neither the Riemann hypothesis nor a narrow-box assumption on the zeros is
+used in the global conclusions. The short-height statements additionally
+invoke the stated theorem of Wang \cite{Wang}, currently a preprint; the
+global conclusions do not depend on it.
+
+\subsection{Counts and main conclusions}
+
+Write a nontrivial zero location as $\rho=\beta+i\gamma$, and write
+$m_\rho$ for its multiplicity. All sums in this subsection run over distinct
+locations with $0<\gamma\le X$. Define
+\begin{align}
+ N(X)&=\sum_\rho m_\rho,&
+ n(X)&=\#\{\rho:m_\rho=1,\ \beta=\tfrac12\},\label{eq:counts1}\\
+ \Nd(X)&=\sum_\rho1,&
+ U(X)&=\sum_{m_\rho=1\ \text{or}\ \beta=1/2}m_\rho,\label{eq:counts2}\\
+ M_{\le r}(X)&=\sum_{m_\rho\le r}m_\rho,&
+ D_{\le r}(X)&=\sum_{m_\rho\le r}1.\label{eq:counts3}
+\end{align}
+Thus $U$ is a mass count of a union, whereas $n$ counts the intersection.
+The denominator for $D_{\le r}$ below is $\Nd$, not $N$.
+
+Here are the exact constants used throughout. Put
+\begin{gather}
+ z=\frac1{\sqrt2},\qquad R_0=\frac12+z\cot z,
+ \qquad u_1=\frac{13}{500},\quad u_2=-\frac7{500},\label{eq:R0}\\
+ \Delta=\sum_{j=1}^2\left(\frac12-\frac1{4\pi^2j^2}\right)u_j^2,
+ \qquad R_1=R_0+\Delta,\label{eq:Delta}\\
+ a_0=\frac{19}{5000},\quad d_0=\frac1{500},\qquad
+ a_1=\frac7{400},\quad d_1=\frac3{250},\quad T_1=R_1+d_1,\label{eq:rowconstants}\\
+ \Gamma=4+2\sqrt{2(1-a_1)},\qquad
+ Z=\frac{\Gamma^2}{8}=3-a_1+2\sqrt{2(1-a_1)},\qquad
+ \beta=T_1-1-a_1,\qquad E=\frac{\beta}{Z}.\label{eq:E}
+\end{gather}
+In particular $0<E<1/2$. The conclusions proved below are
+\begin{align}
+ \liminf_{X\to\infty}\frac{n(X)}{N(X)}
+ &\ge C:=\frac{2-R_0-d_0}{1-a_0}
+ >0.673058325315610967,\label{eq:headlineintersection}\\
+ \liminf_{X\to\infty}\frac{\Nd(X)}{N(X)}
+ &\ge\frac{1+C}{2}>0.836529162657805483,\label{eq:headlinedistinct}\\
+ \liminf_{X\to\infty}\frac{U(X)}{N(X)}
+ &\ge1-2E>0.888554068993217696,\label{eq:headlineunion}\\
+ \liminf_{X\to\infty}\frac{M_{\le2}(X)}{N(X)}
+ &\ge\frac{3-T_1}{2-a_1}>0.837368508521536857,\label{eq:headlinemass}\\
+ \liminf_{X\to\infty}\frac{D_{\le2}(X)}{\Nd(X)}
+ &\ge1-\frac{T_1-1-a_1}{8-2T_1-a_1}
+ >0.939197203148497742.\label{eq:headlinelocations}
+\end{align}
+The strict decimal inequalities compare fixed real constants. They do not
+assert that every finite-height ratio already exceeds the printed decimal.
+For each fixed integer $r\ge3$, the same argument also gives
+\begin{align}
+ \liminf_{X\to\infty}\frac{M_{\le r}(X)}{N(X)}
+ &\ge1-\frac{r+1}{r-1}E,\label{eq:highermass}\\
+ \liminf_{X\to\infty}\frac{D_{\le r}(X)}{\Nd(X)}
+ &\ge1-\frac{E}{r-1-rE}.\label{eq:higherlocations}
+\end{align}
+The word ``fixed'' matters: no uniform asymptotic assertion with a
+height-dependent cutoff is intended.
+
+\input{literature.tex}
+
+\subsection{Organization and the role of computation}
+
+We first prove the finite trace and inertia inequality, then construct the
+common local witness. A separate multiplicity calculation retains the
+simple Gram block while grouping all other locations by multiplicity.
+Only after those arguments are complete do we introduce the two kernels
+and invoke pair correlation. This order exposes the interface between
+finite linear algebra, local numerical certification and analytic number
+theory.
+
+The numerical part has two logically separate jobs. Rigorous interval
+enclosures certify the local inequalities on the entire nonnegative gap
+orthant; exact rational interval arithmetic then encloses the constants
+in \eqref{eq:headlineintersection}--\eqref{eq:higherlocations}. The latter
+calculation does not replace the former. Conversely, a local certificate
+has no zero-count meaning until its matching kernel has passed through the
+analytic limit. The supplement explains the full acceptance mathematics,
+the finite coverage rules and the dependence on rigorous elementary-function
+arithmetic.
+
+\section{A finite trace inequality with a free clipping threshold}
+\label{sec:finite}
+
+\subsection{The operator attached to a conjugation-invariant multiset}
+
+Let $\eta$ be a real even square-integrable function of compact support,
+with $\int_\R\eta(s)^2\dd s=1$. Put $f=\eta^2$ and
+\begin{equation}
+ K(z)=\int_\R f(s)e^{-2\pi izs}\dd s,\qquad
+ v_z(s)=\eta(s)e^{-2\pi izs}.\label{eq:kernelvectors}
+\end{equation}
+Compact support makes $K$ entire. It is even, real on the real axis, and
+$K(0)=1$. We take the inner product to be linear in its first variable,
+so that
+\[
+ \langle v_z,v_w\rangle=K(z-\overline w).
+\]
+The rank-one notation $v\otimes w^*$ denotes the operator
+$h\mapsto\langle h,w\rangle v$.
+
+Let $\mathcal Z$ be a finite conjugation-invariant multiset in $\C$, with
+total multiplicity $N$. A location and each of its repeated copies are
+distinguished when forming the following sum:
+\begin{equation}
+ A=\sum_{z\in\mathcal Z}v_z\otimes v_{\bar z}^{*}.
+ \label{eq:A}
+\end{equation}
+Conjugation invariance gives $A=A^*$, and every summand has trace one.
+All calculations may be made in the finite-dimensional span of the vectors
+that occur, without any assertion of their linear independence. In
+particular,
+\begin{equation}
+ \Tr A=N,\qquad
+ H:=\|A\|_\HS^2=\sum_{z,w\in\mathcal Z}K(z-w)^2.
+ \label{eq:traceenergy}
+\end{equation}
+For the second identity, if $A_z=v_z\otimes v_{\bar z}^*$, then
+$\Tr(A_zA_w)=K(w-z)K(z-w)=K(z-w)^2$. Summation and selfadjointness
+give the identity. The square in this formula is a complex square, not
+the absolute square of each summand. Individual summands need not be
+nonnegative; the total is a squared Hilbert--Schmidt norm.
+
+Let $x_1\le\cdots\le x_n$ be the simple real locations in $\mathcal Z$.
+Define
+\begin{equation}
+ P=\sum_{j=1}^n v_{x_j}\otimes v_{x_j}^*,\qquad
+ M=(K(x_i-x_j))_{1\le i,j\le n},\qquad Q=A-P.
+ \label{eq:simpleblock}
+\end{equation}
+The Gram matrix $M$ is positive semidefinite and has diagonal one. Its
+order is $n$, even if its rank is smaller. The nonzero spectra of $M$
+and $P$ agree, and $\Tr P=n$.
+
+\subsection{Exceptional orbits and positive inertia}
+
+Let $r_R$ count the multiple real locations, of respective multiplicities
+$k_j\ge2$, and let $r_C$ count the unordered nonreal conjugate pairs,
+of respective multiplicities $\ell_j\ge1$ at each member of a pair.
+Set $b=r_R+r_C$. Each real multiple contributes one positive rank-one
+term to $Q$. For a nonreal pair write
+\[
+ g_z=(v_z+v_{\bar z})/2,\qquad
+ h_z=(v_z-v_{\bar z})/(2i).
+\]
+Its contribution is
+\[
+ \ell_z(v_z\otimes v_{\bar z}^*+v_{\bar z}\otimes v_z^*)
+ =2\ell_z(g_z\otimes g_z^*-h_z\otimes h_z^*).
+\]
+Consequently $Q=Q_a-Q_b$ with $Q_a,Q_b\ge0$ and $\rank Q_a\le b$.
+On $\ker Q_a$ the quadratic form of $Q$ is nonpositive, so the number
+of its positive eigenvalues satisfies
+\begin{equation}
+ n_+(Q)\le b.\label{eq:inertia}
+\end{equation}
+These nonorthogonal orbit terms are used only to prove this inertia
+bound. The square completion below instead uses the spectral positive
+and negative parts of $Q$, which are orthogonal.
+
+For $t\ge0$ define the clipped Gram defect
+\begin{equation}
+ D_t(M)=\Tr\bigl((M-I)^2-(M-(1+t)I)_+^2\bigr).
+ \label{eq:defect}
+\end{equation}
+Here the positive part is defined spectrally. Expanding the first square
+and retaining the zero eigenvalues of $M$ gives the exact identity
+\begin{equation}
+ D_t(M)=\Tr P^2-n-\Tr(P-(1+t)I)_+^2.\label{eq:defectP}
+\end{equation}
+The value is nonnegative: for an eigenvalue $x\ge0$ of $M$, the scalar
+function $(x-1)^2-(x-1-t)_+^2$ is nonnegative.
+
+For every $\Gamma\ge2$, with $t=\Gamma/2-1$, we now obtain
+\begin{equation}
+ H\ge\Gamma N-(\Gamma-1)n-\frac{\Gamma^2}{4}b+D_t(M).
+ \label{eq:finiteinertia}
+\end{equation}
+Indeed, write $Q=Q_+-Q_-$ for its spectral decomposition. Subtracting
+$\Gamma\Tr A$ from $\Tr A^2$ gives
+\begin{align*}
+ H-\Gamma N={}&\Tr P^2-\Gamma n
+ +\Tr(Q_+^2-\Gamma Q_+)
+ +\Tr(Q_-^2+\Gamma Q_--2PQ_-)
+ +2\Tr(PQ_+).
+\end{align*}
+The last term is nonnegative. The first quadratic expression in $Q_+$
+is at least $-\Gamma^2 b/4$, by \eqref{eq:inertia} and scalar square
+completion. For a selfadjoint $X$ and $B\ge0$,
+\begin{equation}
+ \Tr(B^2-2XB)\ge-\Tr X_+^2.\label{eq:positivecompletion}
+\end{equation}
+To see this, diagonalize $X$: off-diagonal entries of $B$ add a
+nonnegative amount to $\Tr B^2$, and each nonnegative diagonal entry
+minimizes its scalar quadratic at the positive part of the corresponding
+eigenvalue of $X$. Apply this with $X=P-\Gamma I/2$. Equation
+\eqref{eq:defectP} completes the proof of \eqref{eq:finiteinertia}.
+
+\subsection{The excess that the different counts measure}
+
+Write
+\begin{equation}
+ u=N-n,\qquad e=u-2b
+ =\sum_{j=1}^{r_R}(k_j-2)+2\sum_{j=1}^{r_C}(\ell_j-1)\ge0.
+ \label{eq:excess}
+\end{equation}
+Use the definitions of $U,\Nd,M_{\le r},D_{\le r}$ from the
+introduction, with ``critical'' replaced for now by ``real.'' The mass
+excluded from the union consists precisely of the nonreal pairs with
+$\ell_j\ge2$. Therefore
+\begin{equation}
+ N-U=2\sum_{\ell_j\ge2}\ell_j\le2e.\label{eq:unionexcess}
+\end{equation}
+For $r\ge2$, writing $L_{>r}=N-M_{\le r}$, we similarly have
+\begin{equation}
+ L_{>r}\le\frac{r+1}{r-1}e.\label{eq:massexcess}
+\end{equation}
+For a real location of multiplicity $k\ge r+1$, this follows from
+$k/(k-2)\le(r+1)/(r-1)$. A nonreal pair of multiplicity
+$\ell\ge r+1$ contributes $2\ell$ to the mass and $2(\ell-1)$ to
+$e$, with an even smaller ratio. Summing proves the assertion.
+
+The distinct count has a separate exact identity:
+\begin{equation}
+ N-\Nd=e+r_R,\qquad
+ \Nd\ge\frac{N+n-e}{2}.\label{eq:distinctidentity}
+\end{equation}
+The second assertion uses $r_R\le b=(N-n-e)/2$. In particular it is
+not an inference from a bound for $n$ alone: the excess term must be
+retained until the trace inequality is substituted.
+
+Suppose, for some $a,d,B\ge0$, a local argument has established
+\begin{equation}
+ D_t(M)\ge an-dS-B,\qquad
+ S=x_n-x_1\quad(n\ge2),\quad S=0\quad(n\le1).
+ \label{eq:affinedefect}
+\end{equation}
+Substituting $b=(u-e)/2$ into \eqref{eq:finiteinertia} yields
+\begin{equation}
+ H\ge(1+a)N-dS-B+
+ \left(\Gamma-1-\frac{\Gamma^2}{8}-a\right)u
+ +\frac{\Gamma^2}{8}e.\label{eq:masterexcess}
+\end{equation}
+At $\Gamma=4$ this is equivalently
+\begin{equation}
+ (1-a)n\ge2N-H-dS-B+2e.\label{eq:intersectionfinite}
+\end{equation}
+For the union, it is useful instead to choose
+\begin{equation}
+ \Gamma=4+\sqrt{8(1-a)},\qquad 0\le a<1,
+ \label{eq:unionthreshold}
+\end{equation}
+which makes the coefficient of $u$ exactly zero. This algebraic choice,
+and not a numerical sign test near zero, will be used in the limit.
+
+\section{One witness for all overlapping windows}
+\label{sec:witness}
+
+\subsection{The variational formula}
+
+Let $G\ge0$ be an $n\times n$ Hermitian matrix with diagonal one, and
+write $Y=G-I$. For $t\ge1$,
+\begin{equation}
+ D_t(G)=\max_{T=T^*,\ \|T\|_\op\le t}
+       \{2\Tr(YT)-\Tr(T^2)\}.\label{eq:dual}
+\end{equation}
+After diagonalizing $Y$, deleting the off-diagonal entries of $T$ does
+not change the linear term, reduces its squared norm, and preserves the
+constraint on its diagonal. The scalar maximum is
+$y^2-(y-t)_+^2$ because $y\ge-1\ge-t$. This proves the formula.
+The restriction $t\ge1$ is essential here: a symmetric norm ball would
+also clip some negative eigenvalues if $t<1$.
+
+Fix $m\ge2$ and nonnegative symmetric coefficients $c_{ij}$, with zero
+diagonal, such that
+\begin{equation}
+ \sum_{i=1}^{m-h}c_{i,i+h}\le2\quad(1\le h<m),\qquad
+ C_{\max}:=\max_i\sum_{j\ne i}c_{ij}>0.
+ \label{eq:capacity}
+\end{equation}
+For each full consecutive block $B$ of length $m$, use local indices
+$1,\ldots,m$ and define
+\begin{gather}
+ V_B=\sum_{i<j}c_{ij}|G_{B_iB_j}|^2,\qquad
+ (Z_B)_{ij}=\tfrac m2c_{ij}G_{B_iB_j}\ (i\ne j),
+ \quad (Z_B)_{ii}=0,\label{eq:localwitness}\\
+ s_B=\max_i\sum_j|(Z_B)_{ij}|,\qquad
+ \nu_B=\min(1,t/s_B),\qquad T_B=\nu_B Z_B,
+ \label{eq:nu}
+\end{gather}
+where $\nu_B=1$ when $s_B=0$. The row-sum bound gives
+$\|T_B\|_\op\le t$.
+
+There are $m$ partitions of the integer line into consecutive $m$-blocks,
+one for each residue of the first index modulo $m$. Restrict them to
+$\{1,\ldots,n\}$, placing $T_B$ on every full block and zero on each
+incomplete endpoint block. The resulting $m$ block-diagonal matrices
+all have norm at most $t$. Their average $\overline T$ is therefore
+admissible in \eqref{eq:dual}. Every full consecutive window occurs
+exactly once in this average.
+
+The linear term is
+\[
+ 2\Tr(Y\overline T)=2\sum_B\nu_B V_B.
+\]
+For a fixed global pair of indices of separation $h$, its local
+coefficients among the windows containing it form a subcollection of
+$c_{1,1+h},\ldots,c_{m-h,m}$. Their sum is at most two. Weighted
+Cauchy--Schwarz consequently gives
+\[
+ \left(\sum_{B\ni i,j}c_{ij}^{B}\nu_B\right)^2
+ \le2\sum_{B\ni i,j}c_{ij}^{B}\nu_B^2.
+\]
+Since the corresponding entry of $\overline T$ is
+$\frac12G_{ij}\sum_{B\ni i,j}c_{ij}^{B}\nu_B$, summing its absolute
+square over both orientations of each pair yields
+\[
+ \Tr\overline T^2\le\sum_B\nu_B^2V_B.
+\]
+Thus one admissible witness proves the simultaneous estimate
+\begin{equation}
+ D_t(G)\ge\sum_B J_t(B),\qquad
+ J_t(B):=(2\nu_B-\nu_B^2)V_B.\label{eq:commonwitness}
+\end{equation}
+This is where the overlap is paid for. No sum of separate spectral
+pinchings, and no subsequent outer-block envelope, is required.
+
+\subsection{The threshold-dependent cap and pressure transfer}
+
+The row sum in \eqref{eq:nu} is controlled by the very energy that is
+being retained. For each row, weighted Cauchy--Schwarz gives
+\[
+ s_B^2\le\frac{m^2}{4}C_{\max}V_B.
+\]
+Put
+\begin{equation}
+ b_m=\frac4{m^2C_{\max}}.\label{eq:bm}
+\end{equation}
+If $s_B\le t$, then $J_t(B)=V_B$. If $s_B\ge t$, then
+\begin{equation}
+ J_t(B)=\left(\frac{2t}{s_B}-\frac{t^2}{s_B^2}\right)V_B
+ \ge b_m(2ts_B-t^2)\ge b_m t^2.\label{eq:badcap}
+\end{equation}
+
+Now take $G_{ij}=K(x_i-x_j)$ for real ordered points, and let
+$g_j=x_{j+1}-x_j\ge0$. Suppose the local kernel inequality
+\begin{equation}
+ \sum_{i<j}c_{ij}\left|K(g_i+\cdots+g_{j-1})\right|^2
+       +\sum_{j=1}^{m-1}p_jg_j\ge\epsilon
+ \quad(g_j\ge0)\label{eq:rawrow}
+\end{equation}
+holds with $p_j\ge0$ and
+\begin{equation}
+ 0\le\epsilon\le b_m t^2.\label{eq:capcondition}
+\end{equation}
+On an unclipped block, \eqref{eq:rawrow} bounds $J_t$ directly; on a
+clipped block, \eqref{eq:badcap} and nonnegative pressure do so.
+Sum over all $n-m+1$ full windows when $n\ge m$. Each elementary
+gap is charged by at most one copy of each $p_j$, so its total
+coefficient is at most $P_*:=\sum_{j=1}^{m-1}p_j$. Equation
+\eqref{eq:commonwitness} then proves
+\begin{equation}
+ D_t(G)\ge\epsilon n-P_*S-(m-1)\epsilon.
+ \label{eq:pressuretransfer}
+\end{equation}
+For $n<m$, the right side is nonpositive and the assertion follows
+from $D_t\ge0$. This also treats empty and one-point Gram matrices.
+The endpoint term is retained until the eventual height limit.
+
+Only the unclipped domain $s_B\le t$ needs \eqref{eq:rawrow}; a
+whole-orthant certificate is a convenient stronger premise. The
+threshold condition nevertheless cannot be omitted. For the uniform
+choice
+\begin{equation}
+ c_{i,i+h}=\frac2{m-h},\qquad
+ C_{\max}=2\sum_{h=1}^{m-1}\frac1h,
+ \label{eq:uniformweights}
+\end{equation}
+the endpoint row realizes the maximum. At $m=7$,
+\begin{equation}
+ b_7=\frac{40}{2401}.\label{eq:b7}
+\end{equation}
+Our cosine floor $a_0$ is smaller than $b_7$, whereas the two-mode
+floor $a_1$ is larger. The latter is therefore not transferred at
+$t=1$ by this argument. It is transferred at $t=2$, and at the
+union threshold $t=1+\sqrt{2(1-a_1)}>2$.
+
+\subsection{A bounded state correction}
+\label{sec:potential}
+
+The common witness also permits a bounded correction that telescopes
+between neighboring windows. This observation is useful without
+asserting that an advantageous correction has been found for any
+particular unresolved numerical problem.
+
+Put $q=m-1$, and let $\Phi:\R_{\ge0}^{q-1}\to\R$ have finite
+oscillation $\Omega=\sup\Phi-\inf\Phi$. For $q=1$ its domain is a
+singleton. Keep $t\ge1$, $p_j\ge0$ and $\epsilon\ge0$. Suppose
+that for every nonnegative $q$-tuple,
+\begin{equation}
+ J_t(g)+\sum_{j=1}^{q}p_jg_j
+ \ge\epsilon+\Phi(g_1,\ldots,g_{q-1})
+                   -\Phi(g_2,\ldots,g_q).\label{eq:subaction}
+\end{equation}
+The state differences telescope once across the complete sequence of
+windows. Consequently
+\begin{equation}
+ D_t(G)\ge\epsilon n-P_*S-q\epsilon-\Omega.
+ \label{eq:potentialtransfer}
+\end{equation}
+For $n<m$ the right side is nonpositive and $D_t\ge0$ again suffices.
+No regularity of $\Phi$ is needed. If the corresponding inequality
+with $V$ in place of $J_t$ is known only for $s\le t$, the sufficient
+condition $\epsilon+\Omega\le b_mt^2$ supplies the complementary
+domain using \eqref{eq:badcap}.
+
+There is also a useful uniform stability bound. Suppose two normalized
+nonnegative densities have Fourier transforms differing by at most
+$\rho$ on the real line. Both transforms have absolute value at most
+one, so \eqref{eq:capacity} gives $|V-V'|\le4q\rho$ and
+$|s-s'|\le mC_{\max}\rho/2$. The function
+$s\mapsto\min(1,t/s)$, continuously extended at zero, is
+$1/t$-Lipschitz. Since $V'\le2q$, it follows that
+\begin{equation}
+ |J_t-J_t'|\le
+ \left(4q+\frac{2qmC_{\max}}t\right)\rho.\label{eq:Jstability}
+\end{equation}
+Thus a proved joined inequality can be smoothed with a controlled
+floor loss. One must smooth that full inequality, not assume that the
+boundary $s=t$ remains fixed. A dilation by $\sigma>0$ replaces $\Phi$ by
+$\Phi(\sigma\,\cdot)$ and leaves its oscillation unchanged.
+
+\section{Multiplicity accounting with the simple Gram block retained}
+\label{sec:multiplicity}
+
+Let $x_m$ count real locations of multiplicity $m$ and let $y_\ell$
+count unordered nonreal pairs of multiplicity $\ell$ at each member.
+Then $n=x_1$, $N=\sum_m m x_m+2\sum_\ell\ell y_\ell$, and
+$\Nd=\sum_m x_m+2\sum_\ell y_\ell$. For $c\ge1$ define
+\begin{equation}
+ h_c(x)=c^2-(c-x)_+^2\quad(x\ge0).\label{eq:hc}
+\end{equation}
+This is nondecreasing and concave, and $h_c(0)=0$.
+
+Include \emph{all} real locations in the positive operator
+$P_R=\sum_{z\in\mathcal Z\cap\R}v_z\otimes v_z^*$, with
+multiplicity. The positive inertia of $A-P_R$ is at most
+$y:=\sum_\ell y_\ell$. Repeating the square completion in
+Section~\ref{sec:finite}, now with $\Gamma=2c$, gives
+\begin{equation}
+ H\ge2cN-\Tr h_c(P_R)-c^2y.\label{eq:premaster}
+\end{equation}
+For clarity, the contribution of an eigenvalue $x$ of $P_R$ is
+$x^2-2cx-(x-c)_+^2=-h_c(x)$, which proves the displayed form.
+
+Use one weighted Gram column $\sqrt m\,v_z$ per distinct real
+location of multiplicity $m$. Pinch this Gram matrix into the entire
+simple-real block $M$ and one scalar block $[m]$ per multiple-real
+location. Scalar concavity gives
+\begin{equation}
+ \Tr h_c(P_R)\le\Tr h_c(M)+\sum_{m\ge2}h_c(m)x_m.
+ \label{eq:pinching}
+\end{equation}
+Indeed, diagonalize each compressed block and use its eigenvectors as
+an orthonormal basis of the whole Gram space. Jensen's inequality
+$h_c(\langle Gv,v\rangle)\ge\langle h_c(G)v,v\rangle$ follows
+from the spectral measure of $G$ at $v$. Summing proves
+\eqref{eq:pinching}. Operator concavity is not required. Gram zero
+eigenvalues cause no discrepancy because $h_c(0)=0$.
+
+Since $\Tr M=n$, the exact simple-block identity is
+\[
+ \Tr h_c(M)=(2c-1)n-D_{c-1}(M).
+\]
+Combining this with \eqref{eq:premaster} and \eqref{eq:pinching}
+produces the corrected multiplicity inequality
+\begin{equation}
+ H\ge2cN-\sum_{m\ge1}h_c(m)x_m-c^2\sum_{\ell\ge1}y_\ell
+           +D_{c-1}(M).\label{eq:multiplicitymaster}
+\end{equation}
+The scalar master without the final Gram term is the comparison
+framework in \cite{Waddle}. The retained term is indispensable for
+the improvements made here.
+
+\subsection{Mass of multiplicity at most two}
+
+Take $c=3$, and suppose $D_2(M)\ge an-dS-B$ with $0\le a\le1/2$.
+In \eqref{eq:multiplicitymaster}, the real-location debits are
+$5-a$ for $m=1$, $8$ for $m=2$, and $9$ for $m\ge3$; the debit
+per nonreal pair is $9$. Per unit mass of multiplicity at most two,
+these are at most $5-a$: the four possible values are
+$5-a,4,9/2,9/4$. For all higher multiplicities the debit per unit
+mass is at most $3$. Hence
+\[
+ H+dS+B\ge6N-(5-a)M_{\le2}-3(N-M_{\le2}),
+\]
+and therefore
+\begin{equation}
+ M_{\le2}\ge\frac{3N-H-dS-B}{2-a}.\label{eq:mass2finite}
+\end{equation}
+This is a mass estimate; it is not yet a proportion among distinct
+locations.
+
+\subsection{Costs per location and the distinct denominator}
+
+Assume a finite upper budget
+\begin{equation}
+ H+dS+B\le\mathcal T N,\qquad
+ \alpha=2c-\mathcal T,\quad \beta=\mathcal T-1-a.\label{eq:upperbudget}
+\end{equation}
+With $D_{c-1}(M)\ge an-dS-B$, equation
+\eqref{eq:multiplicitymaster} implies
+\begin{equation}
+ \sum_{m\ge1}\lambda_m x_m+\sum_{\ell\ge1}\omega_\ell y_\ell\le0,
+ \quad
+ \lambda_m=\alpha m-h_c(m)+a\ind_{m=1},\quad
+ \omega_\ell=2\alpha\ell-c^2.\label{eq:locationcosts}
+\end{equation}
+Suppose that for a fixed cutoff $r$ and some $\gamma_r>0$, these
+costs are at least $-\beta$ per low-multiplicity location and at
+least $\gamma_r-\beta$ per high-multiplicity location. A nonreal
+pair contains two locations, so its required bounds are twice the
+corresponding quantities. Then \eqref{eq:locationcosts} gives
+$0\ge-\beta\Nd+\gamma_r(\Nd-D_{\le r})$, whence
+\begin{equation}
+ \frac{D_{\le r}}{\Nd}\ge1-\frac\beta{\gamma_r}.
+ \label{eq:locationratio}
+\end{equation}
+This deduction requires $\Nd>0$, as will hold at sufficiently large
+heights.
+
+For $r=2$ and $c=3$, sufficient conditions are
+\begin{equation}
+ \beta\ge0,\quad \alpha=6-\mathcal T>0,\quad
+ 3-\mathcal T-a\ge0,\quad1-2a\ge0,\quad
+ \gamma_2=8-2\mathcal T-a>0.\label{eq:guards2}
+\end{equation}
+Here $\lambda_1=-\beta$,
+$\lambda_2+\beta=3-\mathcal T-a$, and for $m\ge3$
+\[
+ \lambda_m+\beta-\gamma_2=\alpha(m-3)\ge0.
+\]
+For pairs, $\omega_1+2\beta=1-2a\ge0$, and increasing
+$\ell$ only increases the cost. At the first high multiplicity,
+$\omega_3+2\beta-2\gamma_2=9$, which remains positive for
+$\ell\ge3$. These facts check every multiplicity, not a finite
+selection of them, and give
+\begin{equation}
+ \frac{D_{\le2}}{\Nd}\ge
+ 1-\frac{\mathcal T-1-a}{8-2\mathcal T-a}.\label{eq:distinct2finite}
+\end{equation}
+
+For $r\ge3$, let $3<c<4$, and assume
+\begin{gather}
+ \alpha>0,\quad\beta\ge0,\quad
+ 3-\mathcal T-a\ge0,\quad8-2\mathcal T-a\ge0,\label{eq:guardsr1}\\
+ 4\alpha+\beta-c^2\ge0,\qquad
+ q_c:=2c-1-c^2/2-a\ge0,\qquad
+ \gamma_r:=(r+1)\alpha+\beta-c^2>0.\label{eq:guardsr2}
+\end{gather}
+For $m=1,2,3$, the values of $\lambda_m+\beta$ are respectively
+$0$, $3-\mathcal T-a$, and $8-2\mathcal T-a$. For $m\ge4$,
+$\lambda_m+\beta=\alpha m+\beta-c^2$, which is nonnegative
+at $m=4$ and increasing. At $m=r+1$ it equals $\gamma_r$.
+For a nonreal pair the smallest value of $\omega_\ell+2\beta$
+is $2q_c\ge0$. At $\ell=r+1$ it exceeds $2\gamma_r$ by
+exactly $c^2$. Thus \eqref{eq:locationratio} holds for every fixed
+$r\ge3$ under the displayed conditions.
+
+At $2c=\Gamma$ from \eqref{eq:unionthreshold}, write
+$Z=\Gamma^2/8$ and $E=\beta/Z$. The identity
+$\Gamma-1-Z-a=0$ gives $\alpha=Z-\beta$ and
+\begin{equation}
+ \gamma_r=Z(r-1-rE).\label{eq:gammar}
+\end{equation}
+This explains the denominator in \eqref{eq:higherlocations}. It is
+obtained by per-location accounting, not by dividing a mass estimate
+by a distinct count.
+
+\section{The two kernels and their certified local inequalities}
+\label{sec:kernels}
+
+\subsection{Normalization and the exact energy cost}
+
+On $[-1/2,1/2]$, define
+\begin{equation}
+ f_0(s)=\frac{\cos(\sqrt2s)}{\sqrt2\sin z},\qquad
+ f_1(s)=f_0(s)+u_1\cos(2\pi s)+u_2\cos(4\pi s),
+ \qquad z=1/\sqrt2,\label{eq:densities}
+\end{equation}
+and extend both functions by zero outside that interval. The coefficients
+$u_1,u_2$ are those in \eqref{eq:R0}. Direct integration gives
+$\int f_0=\int f_1=1$. These are nonnegative densities, not signed
+test functions: on the interval $\cos(\sqrt2s)\ge3/4$ and
+$\sqrt2\sin z\le1$, so $f_0\ge3/4$ and
+$f_1\ge3/4-|u_1|-|u_2|=71/100>0$.
+
+For a real even compactly supported density $f\in L^1\cap L^2$, define
+\begin{equation}
+ \mathcal R(f)=\int_\R f(s)^2\dd s+
+ \iint_{\R^2}|s-t|f(s)f(t)\dd s\dd t.\label{eq:energyfunctional}
+\end{equation}
+The energy of $f_0$ is $R_0$ in \eqref{eq:R0}. A short calculation
+also explains why its perturbation cost is exactly quadratic. On the
+support interval put $W_0(s)=\int|s-t|f_0(t)\dd t$. Then
+$W_0''=2f_0$ and $f_0''=-2f_0$. Evenness shows that $f_0+W_0$
+is constant. Its value at $s=1/2$ is
+$z\cot z+1/2=R_0$, so
+\[
+ \mathcal R(f_0)=\int f_0(f_0+W_0)=R_0.
+\]
+If $h$ has integral zero on the interval, the linear variation of
+$\mathcal R(f_0+h)$ vanishes. Write
+$H_h(s)=\int_{-1/2}^s h(t)\dd t$, so $H_h$ vanishes at both
+endpoints. With $W_h(s)=\int|s-t|h(t)\dd t$ one has
+$W_h'=2H_h$ and hence, by integration by parts,
+\[
+ \iint |s-t|h(s)h(t)\dd s\dd t=-2\int H_h(s)^2\dd s.
+\]
+For $h(s)=\sum_j u_j\cos(2\pi js)$, trigonometric orthogonality
+therefore gives
+\begin{equation}
+ \mathcal R(f_0+h)-R_0
+ =\int h^2-2\int H_h^2
+ =\sum_j\left(\frac12-\frac1{4\pi^2j^2}\right)u_j^2.
+ \label{eq:energyperturbation}
+\end{equation}
+The functional is quadratic, so there is no omitted higher-order
+remainder. In particular $\mathcal R(f_1)=R_1=R_0+\Delta$.
+
+The two pieces of the energy must be kept separately when the support
+is dilated. Put $A_j=\int f_j^2$ and $B_j=R_j-A_j$ for $j=0,1$.
+Direct integration yields
+\begin{align}
+ A_0&=\frac1{4\sin^2z}+\frac{z\cot z}{2},\label{eq:A0}\\
+ A_1&=A_0+2\sum_{j=1}^2
+       \frac{(-1)^{j+1}u_j}{2\pi^2j^2-1}
+             +\frac12\sum_{j=1}^2u_j^2.\label{eq:A1}
+\end{align}
+For example, the cross term follows from
+$\int f_0(s)\cos(2\pi js)\dd s=(-1)^{j+1}/(2\pi^2j^2-1)$.
+If $f_{j,\sigma}(s)=\sigma^{-1}f_j(s/\sigma)$, then
+\begin{equation}
+ \mathcal R(f_{j,\sigma})=R_j(\sigma)
+ :=\frac{A_j}{\sigma}+B_j\sigma.\label{eq:dilatedenergy}
+\end{equation}
+Both coefficients are positive. The use of $A_1,B_1$, rather than
+the cosine coefficients $A_0,B_0$, is necessary for the perturbed
+short-height calculation.
+
+\subsection{The local inputs}
+
+Let $k_j=\widehat f_j$ with the Fourier convention
+\eqref{eq:kernelvectors}. Writing $\operatorname{sinc}(x)=\sin(x)/x$
+with value one at zero, their entire formulas are
+\begin{align}
+ k_0(x)&=\frac{\operatorname{sinc}(\pi x-z)
+                    +\operatorname{sinc}(\pi x+z)}{2\sqrt2\sin z},
+ \label{eq:k0sinc}\\
+ k_1(x)&=k_0(x)+\frac12\sum_{j=1}^2u_j
+       \bigl\{\operatorname{sinc}(\pi(x-j))
+                     +\operatorname{sinc}(\pi(x+j))\bigr\}.
+ \label{eq:k1sinc}
+\end{align}
+Define the seven-point energy for six nonnegative gaps by
+\begin{equation}
+ V_{7,j}(g)=\sum_{h=1}^{6}\frac2{7-h}
+     \sum_{i=1}^{7-h}k_j(g_i+\cdots+g_{i+h-1})^2.
+ \label{eq:sevenenergy}
+\end{equation}
+The two computer-assisted local inequalities are
+\begin{align}
+ V_{7,0}(g)+\frac1{3000}\sum_{i=1}^6g_i
+ &\ge\frac{19}{5000},\label{eq:cosinerow}\\
+ V_{7,1}(g)+\frac1{500}\sum_{i=1}^6g_i
+ &\ge\frac7{400}.\label{eq:twomoderow}
+\end{align}
+Both hold for every $g\in\R_{\ge0}^6$, including zero gaps and
+unbounded configurations. Equation~\eqref{eq:cosinerow} is Ainta's
+certificate \cite{Ainta}. Equation~\eqref{eq:twomoderow} is the
+two-mode certificate used for the present union and multiplicity bounds.
+The supplement gives the rigorous finite verification in detail.
+
+Here is the structure of that verification, to clarify what is asserted.
+Nonnegative pressure first reduces a possible strict counterexample to a
+compact simplex. A single-coordinate lower test cuts this down further.
+Outward scalar enclosures on closed grid cells give lower bounds for
+every squared-kernel term. A sum of $h$ gaps requires all $h$ final
+scalar cells; the extra $h-1$ indices at a summed upper endpoint are
+included. Adaptive binary subdivision covers the resulting boxes.
+Interval energy, whole-box Taylor bounds and rigorous positive-definiteness
+tests each supply sufficient acceptance rules. Removable singularities in
+\eqref{eq:k0sinc}--\eqref{eq:k1sinc} use convergent power series with
+explicit remainders. An unaccepted terminal box, a time limit or a failed
+arithmetic guard gives no certificate. The recorded completed covers
+exhaust their domains under these rules. This is stronger than checking
+the objective at grid points, and the proof does not treat a digest or a
+node count as a substitute for coverage.
+
+In \eqref{eq:pressuretransfer}, these rows give $a=a_j$ and
+$d=6p=d_j$, with endpoint debit $B=6a_j$. The first may be used at
+$t=1$. For the second,
+\[
+ \frac{a_1}{b_7}=\frac{16807}{16000}>1,
+ \qquad a_1<4b_7<b_7(1+\sqrt{2(1-a_1)})^2.
+\]
+Thus its admissible thresholds include the two required in
+Sections~\ref{sec:finite} and \ref{sec:multiplicity}. These are
+separate uses of its \emph{same} local certificate, not sums of
+corrections from different densities.
+
+\section{From the finite operator to zeta zeros}
+\label{sec:analytic}
+
+\subsection{The fixed-test pair-correlation input}
+
+We state precisely the analytic theorem being used. If $g$ is a fixed
+real even integrable function supported in $[-1,1]$ and Lipschitz at
+zero, the test-function form of \cite[Lemma 5]{BGST}, also stated in
+\cite[Lemma 3.1]{Lamzouri}, is, with $L=\log X$,
+\begin{align}
+ &\sum_{0<\gamma,\gamma'\le X}
+ \widehat g\!\left(\frac{i(\rho-\rho')L}{2\pi}\right)
+       \frac4{4-(\rho-\rho')^2}\notag\\
+ &\hspace{12mm}=\frac{XL}{2\pi}
+  \left\{g(0)+\int_\R|\alpha|g(\alpha)\dd\alpha
+                      +O_g(L^{-1/2})\right\}.
+ \label{eq:BGST}
+\end{align}
+The zeros are counted with multiplicity, and the formula is unconditional.
+We use it only for fixed smooth functions supported strictly inside
+$(-1,1)$. No new proof of \eqref{eq:BGST} is claimed here.
+
+Take a real even smooth $\eta$ supported strictly in
+$(-\sigma/2,\sigma/2)$, with $0<\sigma<1$ and $\int\eta^2=1$.
+Set $f=\eta^2$, $K=\widehat f$ and $G=f*f$. Both $G$ and $G''$
+are admissible fixed tests. For
+$w=i(\rho-\rho')L/(2\pi)$, integration by parts gives
+$\widehat{G''}(w)=-4\pi^2w^2K(w)^2$. Consequently the exact
+identity
+\begin{equation}
+ K(w)^2=\left(\widehat G(w)-\frac{\widehat{G''}(w)}{4L^2}\right)
+                 \frac4{4-(\rho-\rho')^2}\label{eq:weightremoval}
+\end{equation}
+removes the rational weight. Its denominator is nonzero: the real
+part of the difference of two nontrivial zeros lies in $(-1,1)$,
+so that difference cannot be $2$ or $-2$.
+
+Apply \eqref{eq:BGST} \emph{separately} to $G$ and $G''$, then
+combine their sums by \eqref{eq:weightremoval}. The second term is
+$O_f(X/L)$, while the first has leading coefficient
+\[
+ G(0)+\int|\alpha|G(\alpha)\dd\alpha=\mathcal R(f).
+\]
+Evenness of $f$ changes the double integral with $|s+t|$ into that
+with $|s-t|$. Thus, for the multiset
+\begin{equation}
+ \mathcal Z_X=\left\{\frac{i(\rho-1/2)\log X}{2\pi}:
+                             0<\gamma\le X\right\},
+ \label{eq:zetamultiset}
+\end{equation}
+equation~\eqref{eq:traceenergy} satisfies
+\begin{equation}
+ \frac{H_f(X)}{N(X)}\longrightarrow\mathcal R(f).
+ \label{eq:energylimit}
+\end{equation}
+The functional equation and conjugation of $\zeta$ preserve the
+multiplicity under $\rho\mapsto1-\overline\rho$. That map acts
+as conjugation on \eqref{eq:zetamultiset}; its real elements are
+exactly the critical-line zeros. Thus all finite counts above have
+the interpretations \eqref{eq:counts1}--\eqref{eq:counts3}.
+
+For completeness, the Riemann--von Mangoldt formula gives
+\begin{equation}
+ N(X)=\frac X{2\pi}\log\frac X{2\pi}-\frac X{2\pi}+O(\log X)
+     =\frac{X\log X}{2\pi}+O(X),\label{eq:RVM}
+\end{equation}
+with the usual endpoint convention; see \cite{Titchmarsh} or
+\cite[Lemma 2]{BGST}. The simple-real span obeys
+$S\le X\log X/(2\pi)$, including when it is defined to be zero.
+Therefore
+\begin{equation}
+ \limsup_{X\to\infty}S/N(X)\le1.\label{eq:spanlimit}
+\end{equation}
+Only an upper bound is needed, since every span debit is nonnegative.
+
+\subsection{Smoothing without changing the test with height}
+\label{sec:smoothing}
+
+The densities \eqref{eq:densities} have sharp endpoints and cannot
+simply be inserted as smooth strict-support windows. We now justify
+their use in the final constants. Fix $j\in\{0,1\}$, a dilation
+$0<\sigma<1$ and a slack $0<\delta<1$. Let
+$F=f_{j,\sigma}$ and let $\psi$ be a nonnegative even smooth cutoff
+supported strictly inside $(-\sigma/2,\sigma/2)$. Set
+\begin{equation}
+ f'=\frac{\psi^2F}{\int\psi^2F},\qquad
+ \eta'=\psi\sqrt{F/\int\psi^2F}.\label{eq:smoothing}
+\end{equation}
+Choose cutoffs tending to one on every compact interior subinterval,
+bounded between zero and one. Strict positivity and smoothness of $F$
+on that interior make $\eta'$ smooth after extension by zero. The
+densities $f'$ tend to $F$ in $L^1$ and $L^2$, and their energies
+tend to $R_j(\sigma)$; the second part of
+\eqref{eq:energyfunctional} is continuous in $L^1$ on a common
+compact support.
+
+If $\tau=\|f'-F\|_1$, their Fourier transforms differ by at most
+$\tau$ on the \emph{real} axis. Both have absolute value at most
+one there. The sum of all coefficients in a seven-point row is
+$12$, so the squared-kernel energy changes by at most $24\tau$.
+Choose the cutoff sufficiently close that $24\tau\le\delta a_j$.
+Applying the original local row to the dilated gaps gives
+\begin{equation}
+ V_{7,f'}(g)+\sigma\frac{d_j}{6}\sum_{i=1}^6g_i
+       \ge a'_j:=(1-\delta)a_j.\label{eq:smoothedrow}
+\end{equation}
+Only real transform arguments occur in a simple-real Gram block, so
+no uniform comparison at complex zeta arguments is being assumed.
+
+The common-witness transfer now reads
+\begin{equation}
+ D_t(M_{f'})\ge a'_j n-\sigma d_j S-6a'_j.
+ \label{eq:smootheddefect}
+\end{equation}
+The pressure has become $\sigma d_j$; there is no division by
+$1-\delta$. At $j=0$ use $t=1$. At $j=1$ use $t=2$ for
+multiplicity two, and for the union recompute
+\begin{equation}
+ \Gamma'=4+\sqrt{8(1-a'_1)},\qquad
+ t'=\Gamma'/2-1,\qquad Z'=\Gamma'^2/8.\label{eq:slackthreshold}
+\end{equation}
+Here $t'>2$ and the cap remains valid. The coefficient of $u$ in
+\eqref{eq:masterexcess} is still exactly zero.
+
+Every application of \eqref{eq:BGST} and \eqref{eq:energylimit}
+has the smooth density, dilation, slack and threshold fixed before
+$X\to\infty$. One then removes the cutoff at fixed slack, sends
+$\delta\downarrow0$, and finally sends $\sigma\uparrow1$.
+These successive limits of numerical lower bounds require no
+uniform analytic error as the test changes. An arbitrarily small
+fixed upper-budget margin for the distinct ratios is handled in
+the same way below.
+
+\section{Evaluation of the global proportions}
+\label{sec:global}
+
+\subsection{The simple-critical and total-distinct counts}
+
+Use the smoothed cosine density in \eqref{eq:intersectionfinite},
+with $a=a'_0$, $d=\sigma d_0$ and $B=6a'_0$. Since $e\ge0$,
+the height limit, \eqref{eq:energylimit} and \eqref{eq:spanlimit}
+give
+\[
+ \liminf_{X\to\infty}\frac{n(X)}{N(X)}
+ \ge\frac{2-\mathcal R(f')-\sigma d_0}{1-a'_0}.
+\]
+Take the successive approximation limits described in
+Section~\ref{sec:smoothing}; this proves
+\eqref{eq:headlineintersection} with its exact constant $C$.
+
+To obtain the distinct count, substitute the \emph{full} finite
+inequality into \eqref{eq:distinctidentity} before dropping $e$:
+\begin{align*}
+ \Nd&\ge\frac12\left\{N+
+    \frac{2N-H-\sigma d_0S-6a'_0}{1-a'_0}
+            +\left(\frac2{1-a'_0}-1\right)e\right\}\\
+ &\ge\frac12\left\{N+
+    \frac{2N-H-\sigma d_0S-6a'_0}{1-a'_0}\right\}.
+\end{align*}
+The coefficient discarded is positive. The same limits now prove
+\eqref{eq:headlinedistinct}.
+
+\subsection{The union and higher-multiplicity mass}
+
+Use the smoothed two-mode density and \eqref{eq:slackthreshold}.
+Equation~\eqref{eq:masterexcess} gives
+\[
+ Z'e\le H+\sigma d_1S+6a'_1-(1+a'_1)N.
+\]
+For this fixed smooth test it follows that
+\[
+ \limsup_{X\to\infty}\frac eN
+ \le\frac{\mathcal R(f')+\sigma d_1-1-a'_1}{Z'}.
+\]
+Equation~\eqref{eq:unionexcess} and the successive approximation
+limits give \eqref{eq:headlineunion}. Equation~\eqref{eq:massexcess}
+gives \eqref{eq:highermass} for each fixed $r\ge3$. Although
+\eqref{eq:massexcess} is also valid at $r=2$, the direct estimate
+\eqref{eq:mass2finite}, at $t=2$ with the same smoothed row, is
+stronger there and yields \eqref{eq:headlinemass}.
+
+\subsection{Distinct low-multiplicity locations}
+
+A fixed finite budget avoids any uncontrolled division of an
+$o(N)$ term by $\Nd$. Fix $\xi>0$ and, for a fixed smoothed
+two-mode density, set
+\[
+ \mathcal T=\mathcal R(f')+\sigma d_1+\xi.
+\]
+Equations~\eqref{eq:energylimit} and \eqref{eq:spanlimit}, together
+with $6a'_1/N\to0$, show that
+$H+\sigma d_1S+6a'_1\le\mathcal T N$ for all sufficiently large
+$X$. For sufficiently small $\xi$, slack, cutoff error and
+$1-\sigma$, the strict versions of the guards
+\eqref{eq:guards2} hold. Apply the finite ratio
+\eqref{eq:distinct2finite} first, then pass to the height limit
+and remove $\xi$ and the approximation parameters. This proves
+\eqref{eq:headlinelocations}.
+
+For each fixed $r\ge3$, use $c=\Gamma'/2$ and
+\eqref{eq:guardsr1}--\eqref{eq:guardsr2}. The same procedure and
+\eqref{eq:gammar} give \eqref{eq:higherlocations}. The limiting
+guards can be checked without delicate numerical signs. For example,
+\[
+ \tfrac54\le R_0<\tfrac43,\qquad
+ 0<\Delta<\frac{109}{250000},\qquad 1<T_1<1.35,
+ \qquad 6<\Gamma<7
+\]
+give $\beta>0$, $3-T_1-a_1>0$, $8-2T_1-a_1>0$ and
+$\alpha=\Gamma-T_1>0$. Moreover, using $c^2=2Z$ and
+$\alpha=Z-\beta$,
+\[
+ 4\alpha+\beta-c^2=2Z-3\beta>0,
+\]
+since $Z>5$ and $\beta<0.35$. The remaining guard $q_c=0$ is
+the exact identity \eqref{eq:unionthreshold}. Thus the strict
+conditions persist under the small perturbations just used, with
+this identity retained symbolically. The fine decimal enclosures
+are independent of these coarse qualitative checks.
+
+One can also see directly why the denominator cannot become too small
+for a fixed test. Cauchy--Schwarz on the nonzero eigenvalues of $A$
+and its rank-one decomposition by distinct locations give
+\begin{equation}
+ N^2\le\rank(A)H\le\Nd H.\label{eq:ranksafeguard}
+\end{equation}
+Since $H=O_f(N)$, this implies $\Nd\gg_f N$. We nevertheless
+used a fixed upper budget so that the per-location inequalities
+remain exact throughout the argument.
+
+\subsection{Exact arithmetic and strict comparison signs}
+
+The numerical constants in the introduction are enclosed by rational
+intervals, not by floating-point rounding to a presumed number of
+correct digits. The verifier constructs $\pi$ from Machin's identity
+and alternating arctangent series, bounds square roots by rational
+squaring, and evaluates sine and cosine with explicit Taylor
+remainders. Interval division is used only after excluding zero
+from the denominator. It evaluates \eqref{eq:R0}--\eqref{eq:E}
+and the five exact expressions independently of the local cover
+program. In particular it checks the cap inequalities and the
+strict margins between each exact lower endpoint and its displayed
+decimal. 
+
+The signs of the improvements over the named basic formulas also
+have a short analytic proof. Put
+\[
+ Z_0=3+2\sqrt2,\qquad
+ \eta_*=a_1-d_1-\Delta,\qquad B=(R_0-1)/Z_0.
+\]
+Then $\beta=R_0-1-\eta_*$. Since $a_1<1/2$,
+\[
+ 0<Z_0-Z=a_1\left(1+
+          \frac{2\sqrt2}{1+\sqrt{1-a_1}}\right)<3a_1.
+\]
+Also $\eta_*>633/125000$, whereas
+\[
+ \frac{(R_0-1)(Z_0-Z)}{Z_0}<\frac{a_1}{5}
+     =\frac7{2000}<\frac{633}{125000}.
+\]
+It follows that $E<B$, which proves the strict union improvement
+and the stated higher-cutoff family comparisons. The estimates
+$1<R_0<4/3$ used here follow from $\cos z\ge3/4$,
+$\sin z/z\le1$, and, for the upper bound, the alternating-series
+inequality
+$\cos z<(5/6)(\sin z/z)$ at $z^2=1/2$.
+For example $\cos z\le1-z^2/2+z^4/24=73/96$, while
+$(5/6)(\sin z/z)\ge(5/6)(1-z^2/6)=55/72>73/96$.
+
+The comparison with the mass-two formula $(3-R_0)/2$ has numerator
+\[
+ K_*=a_1(3-R_0)-2(\Delta+d_1)
+ >\frac7{240}-2\left(\frac{109}{250000}+\frac3{250}\right)>0
+\]
+over the positive denominator $2(2-a_1)$. The comparison with the
+distinct-location formula $1-(R_0-1)/(8-2R_0)$ has numerator
+$3K_*$ over
+$(8-2R_0)(8-2T_1-a_1)>0$. These identities explain the gain
+without relying on a long decimal expansion. The exact scalar
+calculation supplies the finer margins in
+Section~\ref{subsec:literaturecomparison}.
+
+\section{Short-height intervals with fixed support margin}
+\label{sec:short}
+
+Fix $0<\theta<1$ and let $H_X=X^\theta$. In this section all counts
+are restricted to $X<\gamma\le X+H_X$, with their definitions
+and denominators otherwise unchanged. We append a subscript $I$
+when needed. For every fixed $0<\sigma<\theta$ and fixed smooth
+real even test $g$ supported in $[-\sigma,\sigma]$, Wang's
+Theorem~2.2 \cite{Wang} states
+\begin{align}
+ &\sum_{X<\gamma,\gamma'\le X+H_X}
+ \widehat g\!\left(\frac{i(\rho-\rho')\log X}{2\pi}\right)
+       \frac4{4-(\rho-\rho')^2}\notag\\
+ &\hspace{8mm}=\frac{H_X\log X}{2\pi}
+       \left(g(0)+\int|\alpha|g(\alpha)\dd\alpha\right)
+                +O_g(H_X+X^\sigma\log^2X).
+ \label{eq:Wang}
+\end{align}
+This is a separate analytic input, not a subtraction of two
+full-height correlation asymptotics. Its normalized error tends
+to zero for every fixed strict support margin:
+\[
+ \frac{H_X+X^\sigma\log^2X}{H_X\log X}
+ =O\bigl((\log X)^{-1}+X^{\sigma-\theta}\log X\bigr)=o(1).
+\]
+Apply \eqref{eq:weightremoval} to the two fixed tests $G,G''$
+as before. The difference form of \eqref{eq:RVM} gives
+\[
+ N_I(X)=\frac{H_X\log X}{2\pi}+O(H_X+\log X),
+ \qquad S\le\frac{H_X\log X}{2\pi}.
+\]
+It follows that $H_f/N_I\to\mathcal R(f)$ and
+$\limsup S/N_I\le1$. The finite argument is unchanged.
+
+Define
+\begin{equation}
+ T_j(\theta)=\frac{A_j}{\theta}+(B_j+d_j)\theta\quad(j=0,1),
+ \qquad E_\theta=\frac{T_1(\theta)-1-a_1}{Z}.
+ \label{eq:shortconstants}
+\end{equation}
+Smooth first at a fixed $\sigma<\theta$, take the height limit
+with every test fixed, remove the cutoff and floor slack, and only
+then let $\sigma\uparrow\theta$. The resulting lower limiting
+bounds are
+\begin{align}
+ \liminf\frac{n_I}{N_I}&\ge\frac{2-T_0(\theta)}{1-a_0},&
+ \liminf\frac{\Nd_I}{N_I}&\ge
+       \frac12\left(1+\frac{2-T_0(\theta)}{1-a_0}\right),
+ \label{eq:shortintersection}\\
+ \liminf\frac{U_I}{N_I}&\ge1-2E_\theta,&
+ \liminf\frac{M_{\le2,I}}{N_I}&\ge\frac{3-T_1(\theta)}{2-a_1},
+ \label{eq:shortunion}\\
+ \liminf\frac{M_{\le r,I}}{N_I}&\ge
+       1-\frac{r+1}{r-1}E_\theta\qquad(r\ge3\text{ fixed}).
+ \label{eq:shorthigher}
+\end{align}
+All lower limits here are as $X\to\infty$. A negative right side
+may be replaced by zero. These mass and total-distinct statements
+hold for each fixed $0<\theta<1$ under the stated short-height
+input, although at small $\theta$ some give no nontrivial lower
+bound.
+
+For distinct low-multiplicity locations, the parameter guards must
+also survive this substitution. The bound
+\begin{equation}
+ \liminf\frac{D_{\le2,I}}{\Nd_I}\ge
+ 1-\frac{T_1(\theta)-1-a_1}{8-2T_1(\theta)-a_1}
+ \label{eq:shortdistinct2}
+\end{equation}
+holds whenever the strict versions of the nonconstant guards in
+\eqref{eq:guards2} hold with $a=a_1$ and
+$\mathcal T=T_1(\theta)$. More explicitly, require
+\[
+ T_1(\theta)-1-a_1>0,\quad 6-T_1(\theta)>0,\quad
+ 3-T_1(\theta)-a_1>0,\quad8-2T_1(\theta)-a_1>0;
+\]
+the fixed condition $1-2a_1>0$ already holds.
+For $r\ge3$, the analogous formula is
+\begin{equation}
+ \liminf\frac{D_{\le r,I}}{\Nd_I}\ge
+           1-\frac{E_\theta}{r-1-rE_\theta},\label{eq:shortdistinctr}
+\end{equation}
+provided \eqref{eq:guardsr1}--\eqref{eq:guardsr2} hold with
+$c=\Gamma/2$, $a=a_1$, $\mathcal T=T_1(\theta)$, strictly for
+the nonconstant inequalities and with $q_c=0$ retained exactly.
+These conditions hold for $\theta$ sufficiently close to one by
+the global checks and continuity. We do not assert them for every
+$\theta\in(0,1)$. The fixed upper-budget construction in
+Section~\ref{sec:global} justifies the distinct denominator here
+as well. None of these statements is uniform as $\theta$ varies
+with height, and none sets $\sigma=\theta$ inside
+\eqref{eq:Wang}.
+
+\section{Scope of the accompanying local extension}
+\label{sec:scope}
+
+The finite transfer permits other window lengths, profiles and
+distance-capacity weights, but its premise remains a uniform local
+inequality. To make that boundary concrete, the supplement also
+studies a thirteen-point objective with six explicit Fourier modes,
+two gap pressures and target $31/5000$. Scalar exclusion partitions
+the gap range of a hypothetical strict counterexample into short
+and long components. Complete local certificates establish the
+all-long region and every region with exactly one short gap,
+including all ten interior positions. Their proof uses disjoint
+triples and an exact convex quadratic lower bound on the remaining
+small cells.
+
+The resulting lower bounds are $0.006424625$ on the all-long
+region, $0.00623$ on the two endpoint-one-short regions and
+$0.0062$ on each interior-one-short region, on the precise domains
+specified in the supplement. Thus a remaining strict counterexample
+must have at least two short gaps. Whether such a configuration
+exists remains unresolved in this work. The full thirteen-point inequality is not
+asserted, and none of its prospective zero-count consequences is
+included in \eqref{eq:headlineintersection}--\eqref{eq:higherlocations}.
+
+The distinction is structural. The common-witness inequality can
+transfer a proved local floor, and the bounded state correction can
+transfer a proved subaction. Neither constructs a missing floor or
+a missing potential. In the present application the two completed
+seven-point inputs already suffice for every global bound stated
+in the article. The larger-window result records an additional
+proved local reduction without enlarging those conclusions.
+
+\section*{Acknowledgments}
+The author is indebted to his family for their extraordinary patience and support. He is grateful to Dr. C. Oommen and Prof. B. N. Raghunandan of the Department of Aerospace Engineering, Indian Institute of Science, for their mentorship and for fostering the intellectual latitude that enabled this independent research.
+
+\section*{Note on AI Use}
+The author declares the use of consumer-grade Gemini 3.1 and GPT-6 models for prior-art search, developing some ideas and proofs, computer-assisted verification, drafting and LaTeX typesetting; the author takes full and sole responsibility for all contents of this work.
+
+\input{bibliography.tex}
+\end{document}

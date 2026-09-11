@@ -1,0 +1,213 @@
+\subsection{Comparison with earlier bounds}
+\label{subsec:literaturecomparison}
+
+The union, multiplicity-two mass, and multiplicity-two distinct-location
+conclusions improve identified unconditional bounds for the same counting
+statistics. The union bound improves Lamzouri's
+Theorem~1.1 \cite{Lamzouri}; the two multiplicity-two bounds improve
+the displayed formulas in Waddle's public research draft \cite{Waddle}.
+The respective improvements, as differences of proportions, exceed
+\[
+ 0.000934060819863356,\qquad
+ 0.001118156681831034,\qquad
+ 0.000469272388685036.
+\]
+Multiplying these differences by $100$ gives percentage-point gains.
+The comparisons use the exact expressions, not subtraction of rounded
+headline percentages.
+
+To state the comparisons compactly, put
+\begin{equation}\label{eq:literatureconstants}
+ C_0=2-R_0,\qquad C_1=\frac{3-R_0}{2},\qquad
+ B=(3-2\sqrt2)(R_0-1),\qquad C_2=1-2B.
+\end{equation}
+Thus $C_0=0.672500703679411\ldots$ is the Montgomery--Taylor
+simple-critical constant and $C_1=0.836250351839705\ldots$ is the
+corresponding distinct-zero constant. Alp\"oge and Furman
+\cite[Theorem A]{AF} established these bounds unconditionally by an
+inertia and rank--trace argument for a finite compression of Weil's
+Hermitian form. Lamzouri \cite{Lamzouri} recovered them through a
+Hilbert-space argument and obtained the union constant
+\[
+ C_2=\frac{1+2\sqrt2+2C_0}{3+2\sqrt2}
+       =0.887620008173354\ldots.
+\]
+
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{@{}p{.10\textwidth}p{.43\textwidth}p{.40\textwidth}@{}}
+\hline
+Ratio & Present lower bound & Named comparison\\
+\hline
+$U/N$
+& $1-2E$\par $>0.888554068993217696$
+& Lamzouri \cite{Lamzouri}:\par
+  $C_2=0.887620008173354\ldots$\\
+$M_{\le2}/N$
+& $\dfrac{3-T_1}{2-a_1}$\par $>0.837368508521536857$
+& Waddle \cite{Waddle}:\par
+  $C_1=0.836250351839705\ldots$\\
+$D_{\le2}/N^{\rm d}$
+& $1-\dfrac{\beta}{8-2T_1-a_1}$\par $>0.939197203148497742$
+& Waddle \cite{Waddle}:\par
+  $1-\dfrac{R_0-1}{2(4-R_0)}$\par
+  $=0.938727930759812\ldots$\\
+$n/N$
+& $\dfrac{2-R_0-d_0}{1-a_0}$\par $>0.673058325315610967$
+& Devine \cite{Devine}:\par
+  $673399/10^6=0.673399$\par
+  (stated unconditional theorem)\\
+$N^{\rm d}/N$
+& $\dfrac{3-R_0-d_0-a_0}{2(1-a_0)}$\par $>0.836529162657805483$
+& Alp\"oge--Furman and Lamzouri\par
+  \cite{AF,Lamzouri}:\par
+  $C_1=0.836250351839705\ldots$\\
+\hline
+\end{tabular}
+\caption{Five separate global lower limiting proportions. Each exact
+expression in the middle column bounds the corresponding lower limit
+from below; the strict inequalities compare these expressions with
+shorter decimals. All external statements listed here are unconditional.
+Waddle's source is an unrefereed public draft and Devine's is a public
+preprint. The last row is a comparison with the stated foundational
+bounds, not a claim of an overall distinct-zero record.}
+\label{tab:literaturecomparison}
+\end{table}
+
+Here $n$ counts simple critical zeros, whereas $U$ counts with
+multiplicity the union of simplicity and critical-line location.
+The denominators $N$ and $N^{\rm d}$ are different: $M_{\le r}/N$
+is a fraction of zero mass, and $D_{\le r}/N^{\rm d}$ is a fraction
+of distinct complex zero locations. Locations with the same imaginary
+part are not identified. These conventions also match the external
+statements in Table~\ref{tab:literaturecomparison}. A dyadic statement
+for additive counts gives the corresponding cumulative lower limit by
+summing sufficiently high dyadic pieces of $(0,X]$; the bounded initial
+remainder disappears after division by the same denominator.
+
+For every fixed integer $r\ge3$, Waddle's displayed mass and
+distinct-location bounds are respectively
+\[
+ 1-\frac{(r+1)B}{r-1},\qquad
+ 1-\frac{B}{r-1-rB}.
+\]
+Our corresponding formulas replace $B$ by $E$, and the proved
+inequality $0<E<B<1/2$ makes both improvements strict. The mass
+gain is $(r+1)(B-E)/(r-1)$; the location comparison follows from
+the strict increase of $x/(r-1-rx)$ on the relevant interval.
+This conclusion uses the retained multiplicity budget. It is not a
+formal consequence of a union bound: a multiset supported on real
+locations of multiplicity $r+1$ has full union mass and no mass at
+multiplicity at most $r$.
+
+The fixed-cutoff statement is an improvement over a specified family.
+It does not assert the best available bound for every cutoff.
+Simoni\v{c}, Trudgian and Turnage-Butterbaugh \cite[Theorems 4 and 7]{STT}
+give unconditional exponential estimates for the number of locations
+of exact multiplicity $j$. Weighting by $j$ and summing the tail gives
+mass bounds tending to one as the cutoff grows, whereas the displayed
+mass family here tends to $1-E<1$. Consequently the exponential-tail
+bound is stronger for sufficiently large fixed cutoffs.
+
+The simple-critical conclusion refines Ainta's public bound
+\cite{Ainta}, whose exact expression is
+\[
+ \frac{1345000C_0-2680}{1340003}
+       =0.673008527927779\ldots.
+\]
+It remains below Shi's stated research-draft candidate
+$0.6733169771424713\ldots$ \cite{Shi} and Devine's stated
+$0.673399$ \cite{Devine}. The latter preprint's numerical proof has
+not been independently reconstructed here. These are external
+comparison targets, not premises of our proof, and we claim no overall
+simple-critical or distinct-zero record. Zeta Lab's public report
+\cite{ZetaLab} also records an eight-point value
+$0.67305298298962888\ldots$, distinguishing an interval-certified
+local inequality from its Lean implication conditional on that
+inequality. The public union extension \cite{Union} supplies another
+explicit treatment of the distinction between union and intersection.
+
+Stronger numbers with additional hypotheses must be compared separately.
+The union bounds $8/9$ in \cite[Remark 2]{BGSTI} and
+$(2+C_0)/3=0.890833567893\ldots$ discussed in \cite[Remark 1.2]{Lamzouri}
+use a narrow-box assumption on the horizontal locations of all
+sufficiently high dyadic zeros; they are not unconditional union
+comparators. Under RH, Gon\c{c}alves, de Laat and Leijenhorst
+\cite[Theorem 1]{GdLL} prove
+$\liminf M_{\le2}/N\ge0.9614$. Their cutoff-three value $0.9787$
+also carries the theorem's additional qualification concerning Maple
+summation of specified series. RH-dependent pair-correlation estimates
+in \cite{CGdL} include $0.6792$ for simple zeros and $0.8477$ for
+distinct zeros. Devine's claims beyond $0.6792$ likewise require
+additional density or horizontal-profile assumptions \cite{Devine}.
+None of these numbers is an unconditional obstruction to the bounds
+proved here.
+
+
+\subsection{Relation to earlier methods}
+\label{subsec:literaturenovelty}
+
+The analytic framework and several finite ingredients have established
+antecedents. Montgomery's pair-correlation theorem \cite{Mon73} and
+the Montgomery--Taylor window reported in \cite{Mon75} underlie the
+constant $R_0$; the associated extremal problem is treated in
+\cite{CCLM}. Aryan \cite{Aryan} obtained an unconditional form of
+the relevant Fej\'er-kernel calculation, and Baluyot, Goldston,
+Suriajaya and Turnage-Butterbaugh \cite{BGST} proved the published
+full-height pair-correlation formula used here. Lamzouri's
+finite-multiset formulation and removal of the rational pair weight
+\cite{Lamzouri} provide the direct analytic interface. Wang
+\cite{Wang} supplies the separate short-height input, with support
+strictly smaller than the fixed interval exponent. We prove no new
+pair-correlation theorem and do not insert a height-dependent test
+into a fixed-test error estimate.
+
+Ainta \cite{Ainta} introduced the clipped spectral stability
+correction and quantitative overlapping seven-point windows used in
+this line of refinements. The Fourier perturbations of the cosine
+density and nonuniform pair weights with distance-capacity constraints
+in the inspected Ojha and Shi drafts \cite{Ojha,Shi} are also prior
+work. Shi's threshold-one trace--energy envelope, pressure rescaling,
+and two-certificate supporting-plane deduction are directly relevant
+antecedents. In particular, neither weighted overlap nor removal of
+the elementary threshold-one cap is claimed as a new idea here.
+The arbitrary-parameter scalar multiplicity framework and its
+uncorrected low-multiplicity consequences are credited to the
+two-trace development and Waddle's displayed deductions
+\cite{AF,Waddle}.
+
+The finite contribution here is the use of one common averaged witness
+to transfer a whole-domain local Gram inequality directly to the
+clipped spectral defect while preserving its pressure floor. The
+uniform coefficient estimate depends on the clipping threshold.
+For the seven-point weights used here, its admissible cap is
+$40t^2/2401$. This dependence is material: the new local floor
+$a_1=7/400$ is unavailable through this cap at $t=1$, but is
+admissible at $t=2$ and at the union threshold
+$t=1+\sqrt{2(1-a_1)}$. Thus the stronger local certificate is matched
+to the count being proved. Retaining the resulting simple-Gram
+correction in the separate per-location multiplicity costs then
+produces the mass and distinct-location bounds from that same
+certificate. The elementary variational identity for clipping is
+part of the proof; the gain comes from its common-witness application
+and the uniform capacity estimate.
+
+The required two-mode profile, its normalization and energy cost,
+and the whole-domain seven-point inequality are established explicitly.
+The local interval engine is an attributed adaptation of Ainta's
+MIT-licensed implementation, using Arb ball arithmetic \cite{Johansson}.
+The separate cosine row for the simple-critical and total-distinct
+conclusions is Ainta's completed input. Our reproduced executions
+and exact scalar calculations certify the stated finite numerical
+premises; they do not replace the finite operator argument or the
+passage to zero limits. 
+
+Finally, bounded-potential versions of the common-witness argument
+give additional finite inequalities, but the general telescoping
+subaction idea already occurs in the public literature, including
+\cite{Devine}. Partial larger-window certificates are identified by
+their domains. They supply no global zero-count conclusion unless
+the entire required configuration space has been covered.
